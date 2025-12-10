@@ -6,45 +6,50 @@
           <value xml:lang="en-US">localwriter</value>
         </prop>
         <prop oor:name="Context" oor:type="xs:string">
-          <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.GlobalDocument,com.sun.star.text.TextDocument,com.sun.star.text.WebDocument</value>
+          <value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument</value>
         </prop>
         <node oor:name="Submenu">
+          <!-- Akcje -->
           <node oor:name="M1" oor:op="replace">
-            <prop oor:name="Title">
-              <value xml:lang="en-US">Extend Selection</value>
-            </prop>
-            <prop oor:name="URL">
-              <value>service:org.extension.sample.do?ExtendSelection</value>
-            </prop>
-            <prop oor:name="Target" oor:type="xs:string">
-              <value>_self</value>
-            </prop>
+            <prop oor:name="Title"><value xml:lang="en-US">Rozwiń (Extend)</value></prop>
+            <prop oor:name="URL"><value>service:org.extension.sample.do?ExtendSelection</value></prop>
           </node>
-           <node oor:name="M2" oor:op="replace">
-            <prop oor:name="Title">
-              <value xml:lang="en-US">Edit Selection</value>
-            </prop>
-            <prop oor:name="URL">
-              <value>service:org.extension.sample.do?EditSelection</value>
-            </prop>
-            <prop oor:name="Target" oor:type="xs:string">
-              <value>_self</value>
-            </prop>
+          <node oor:name="M2" oor:op="replace">
+            <prop oor:name="Title"><value xml:lang="en-US">Edytuj (Edit)</value></prop>
+            <prop oor:name="URL"><value>service:org.extension.sample.do?EditSelection</value></prop>
           </node>
-            <node oor:name="M3" oor:op="replace">
-            <prop oor:name="Title">
-              <value xml:lang="en-US">Settings</value>
-            </prop>
-            <prop oor:name="URL">
-              <value>service:org.extension.sample.do?settings</value>
-            </prop>
-            <prop oor:name="Target" oor:type="xs:string">
-              <value>_self</value>
-            </prop>
+          <node oor:name="S1" oor:op="replace"><prop oor:name="URL"><value>private:separator</value></prop></node>
+          
+          <!-- Wybór Modelu -->
+          <node oor:name="M_Models" oor:op="replace">
+            <prop oor:name="Title"><value xml:lang="en-US">Wybierz Model</value></prop>
+            <node oor:name="Submenu">
+                <node oor:name="O1" oor:op="replace">
+                    <prop oor:name="Title"><value>1. Bielik-11B (Google Cloud Run)</value></prop>
+                    <prop oor:name="URL"><value>service:org.extension.sample.do?SwitchModel_bielik</value></prop>
+                </node>
+                <node oor:name="O2" oor:op="replace">
+                    <prop oor:name="Title"><value>2. Gemini 3 Pro (Deep Research)</value></prop>
+                    <prop oor:name="URL"><value>service:org.extension.sample.do?SwitchModel_gemini</value></prop>
+                </node>
+                <node oor:name="O3" oor:op="replace">
+                    <prop oor:name="Title"><value>3. OpenAI o3-pro (Logic)</value></prop>
+                    <prop oor:name="URL"><value>service:org.extension.sample.do?SwitchModel_openai_o3</value></prop>
+                </node>
+                <node oor:name="O4" oor:op="replace">
+                    <prop oor:name="Title"><value>4. Local (Ollama)</value></prop>
+                    <prop oor:name="URL"><value>service:org.extension.sample.do?SwitchModel_local</value></prop>
+                </node>
+            </node>
+          </node>
+          
+          <node oor:name="S2" oor:op="replace"><prop oor:name="URL"><value>private:separator</value></prop></node>
+          <node oor:name="M3" oor:op="replace">
+            <prop oor:name="Title"><value xml:lang="en-US">Ustawienia</value></prop>
+            <prop oor:name="URL"><value>service:org.extension.sample.do?Settings</value></prop>
           </node>
         </node>
       </node>
     </node>
   </node>
 </oor:component-data>
-

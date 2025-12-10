@@ -5,702 +5,258 @@ import json
 import urllib.request
 import urllib.parse
 from com.sun.star.task import XJobExecutor
-from com.sun.star.awt import MessageBoxButtons as MSG_BUTTONS
 import uno
 import os 
 import logging
-import re
 
-from com.sun.star.beans import PropertyValue
-from com.sun.star.container import XNamed
+# --- REJESTR MODELI (STRATEGIA GOOGLE-FIRST) ---
+# Zgodność: Python 3.8+ (Wbudowany w LO).
+# Niezależność: Brak bezpośrednich wiązań do JRE (Safe for OpenJDK 17).
 
+MODELS_REGISTRY = {
+    "local": {
+        "name": "Local (Ollama/WebUI)",
+        "default_url": "http://localhost:11434/v1/chat/completions",
+        "default_model": "llama3",
+        "auth_type": "none"
+    },
+    "bielik": {
+        "name": "Bielik-11B (Google Cloud Run)",
+        "default_url": "https://TWOJA-USLUGA.run.app/v1/chat/completions", 
+        "default_model": "bielik-11b-v2.3",
+        "auth_type": "bearer"
+    },
+    "gemini": {
+        "name": "Gemini 3 Pro (Deep Research)",
+        "default_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent",
+        "default_model": "gemini-1.5-pro",
+        "auth_type": "api_key_query" # Gemini często używa klucza w URL
+    },
+    "claude": {
+        "name": "Claude 4.5 Sonnet (Anthropic)",
+        "default_url": "https://api.anthropic.com/v1/messages", 
+        "default_model": "claude-3-5-sonnet-20240620",
+        "auth_type": "header_x_api_key"
+    },
+    "openai_o3": {
+        "name": "OpenAI o3-pro (High Reasoning)",
+        "default_url": "https://api.openai.com/v1/chat/completions",
+        "default_model": "o3-pro",
+        "auth_type": "bearer"
+    }
+}
 
-def log_to_file(message):
-    # Get the user's home directory
-    home_directory = os.path.expanduser('~')
-    
-    # Define the log file path
-    log_file_path = os.path.join(home_directory, 'log.txt')
-    
-    # Set up logging configuration
-    logging.basicConfig(filename=log_file_path, level=logging.INFO, format='%(asctime)s - %(message)s')
-    
-    # Log the input message
-    logging.info(message)
-
-
-# The MainJob is a UNO component derived from unohelper.Base class
-# and also the XJobExecutor, the implemented interface
 class MainJob(unohelper.Base, XJobExecutor):
     def __init__(self, ctx):
         self.ctx = ctx
-        # handling different situations (inside LibreOffice or other process)
         try:
             self.sm = ctx.getServiceManager()
             self.desktop = XSCRIPTCONTEXT.getDesktop()
-            self.document = XSCRIPTCONTEXT.getDocument()
         except NameError:
             self.sm = ctx.ServiceManager
             self.desktop = self.ctx.getServiceManager().createInstanceWithContext(
                 "com.sun.star.frame.Desktop", self.ctx)
-    
 
-    def get_config(self,key,default):
-  
-        name_file ="localwriter.json"
-        #path_settings = create_instance('com.sun.star.util.PathSettings')
-        
-        
-        path_settings = self.sm.createInstanceWithContext('com.sun.star.util.PathSettings', self.ctx)
-
-        user_config_path = getattr(path_settings, "UserConfig")
-
-        if user_config_path.startswith('file://'):
-            user_config_path = str(uno.fileUrlToSystemPath(user_config_path))
-        
-        # Ensure the path ends with the filename
-        config_file_path = os.path.join(user_config_path, name_file)
-
-        # Check if the file exists
-        if not os.path.exists(config_file_path):
-            return default
-
-        # Try to load the JSON content from the file
-        try:
-            with open(config_file_path, 'r') as file:
-                config_data = json.load(file)
-        except (IOError, json.JSONDecodeError):
-            return default
-
-        # Return the value corresponding to the key, or the default value if the key is not found
-        return config_data.get(key, default)
-
-    def set_config(self, key, value):
-        name_file = "localwriter.json"
-        
+    # --- KONFIGURACJA (JSON) ---
+    def get_config_path(self):
+        name_file = "localwriter_v2.json"
         path_settings = self.sm.createInstanceWithContext('com.sun.star.util.PathSettings', self.ctx)
         user_config_path = getattr(path_settings, "UserConfig")
-
         if user_config_path.startswith('file://'):
             user_config_path = str(uno.fileUrlToSystemPath(user_config_path))
+        return os.path.join(user_config_path, name_file)
 
-        # Ensure the path ends with the filename
-        config_file_path = os.path.join(user_config_path, name_file)
-
-        # Load existing configuration if the file exists
-        if os.path.exists(config_file_path):
-            try:
-                with open(config_file_path, 'r') as file:
-                    config_data = json.load(file)
-            except (IOError, json.JSONDecodeError):
-                config_data = {}
-        else:
-            config_data = {}
-
-        # Update the configuration with the new key-value pair
-        config_data[key] = value
-
-        # Write the updated configuration back to the file
+    def load_config(self):
+        default_config = {
+            "current_profile": "local",
+            "profiles": {}, 
+            "common": {"extend_max_tokens": 500, "system_prompt": "Jesteś ekspertem prawnym."}
+        }
+        path = self.get_config_path()
+        if not os.path.exists(path): return default_config
         try:
-            with open(config_file_path, 'w') as file:
-                json.dump(config_data, file, indent=4)
-        except IOError as e:
-            # Handle potential IO errors (optional)
-            print(f"Error writing to {config_file_path}: {e}")
+            with open(path, 'r') as file:
+                data = json.load(file)
+                if "profiles" not in data: data["profiles"] = {}
+                return data
+        except: return default_config
 
+    def save_config(self, config):
+        try:
+            with open(self.get_config_path(), 'w') as file:
+                json.dump(config, file, indent=4)
+        except Exception as e: print(f"Config Error: {e}")
 
-    #retrieved from https://wiki.documentfoundation.org/Macros/General/IO_to_Screen
-    #License: Creative Commons Attribution-ShareAlike 3.0 Unported License,
-    #License: The Document Foundation  https://creativecommons.org/licenses/by-sa/3.0/
-    #begin sharealike section 
-    def input_box(self,message, title="", default="", x=None, y=None):
-        """ Shows dialog with input box.
-            @param message message to show on the dialog
-            @param title window title
-            @param default default value
-            @param x optional dialog position in twips
-            @param y optional dialog position in twips
-            @return string if OK button pushed, otherwise zero length string
-        """
-        WIDTH = 600
-        HORI_MARGIN = VERT_MARGIN = 8
-        BUTTON_WIDTH = 100
-        BUTTON_HEIGHT = 26
-        HORI_SEP = VERT_SEP = 8
-        LABEL_HEIGHT = BUTTON_HEIGHT * 2 + 5
-        EDIT_HEIGHT = 24
-        HEIGHT = VERT_MARGIN * 2 + LABEL_HEIGHT + VERT_SEP + EDIT_HEIGHT
-        import uno
-        from com.sun.star.awt.PosSize import POS, SIZE, POSSIZE
-        from com.sun.star.awt.PushButtonType import OK, CANCEL
-        from com.sun.star.util.MeasureUnit import TWIP
-        ctx = uno.getComponentContext()
-        def create(name):
-            return ctx.getServiceManager().createInstanceWithContext(name, ctx)
-        dialog = create("com.sun.star.awt.UnoControlDialog")
-        dialog_model = create("com.sun.star.awt.UnoControlDialogModel")
-        dialog.setModel(dialog_model)
-        dialog.setVisible(False)
-        dialog.setTitle(title)
-        dialog.setPosSize(0, 0, WIDTH, HEIGHT, SIZE)
-        def add(name, type, x_, y_, width_, height_, props):
-            model = dialog_model.createInstance("com.sun.star.awt.UnoControl" + type + "Model")
-            dialog_model.insertByName(name, model)
-            control = dialog.getControl(name)
-            control.setPosSize(x_, y_, width_, height_, POSSIZE)
-            for key, value in props.items():
-                setattr(model, key, value)
-        label_width = WIDTH - BUTTON_WIDTH - HORI_SEP - HORI_MARGIN * 2
-        add("label", "FixedText", HORI_MARGIN, VERT_MARGIN, label_width, LABEL_HEIGHT, 
-            {"Label": str(message), "NoLabel": True})
-        add("btn_ok", "Button", HORI_MARGIN + label_width + HORI_SEP, VERT_MARGIN, 
-                BUTTON_WIDTH, BUTTON_HEIGHT, {"PushButtonType": OK, "DefaultButton": True})
-        add("edit", "Edit", HORI_MARGIN, LABEL_HEIGHT + VERT_MARGIN + VERT_SEP, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(default)})
-        frame = create("com.sun.star.frame.Desktop").getCurrentFrame()
+    def get_active_profile_settings(self, config):
+        profile_key = config.get("current_profile", "local")
+        # Fallback do 'local' jeśli klucz nie istnieje
+        registry_data = MODELS_REGISTRY.get(profile_key, MODELS_REGISTRY["local"])
+        user_profile = config["profiles"].get(profile_key, {})
+        
+        return {
+            "key": profile_key,
+            "name": registry_data["name"],
+            "url": user_profile.get("url", registry_data["default_url"]),
+            "model": user_profile.get("model", registry_data["default_model"]),
+            "api_key": user_profile.get("api_key", ""),
+            "auth_type": registry_data["auth_type"]
+        }
+
+    # --- UI (UNO Dialogs) ---
+    def input_box(self, message, title="", default=""):
+        # Standardowy dialog UNO kompatybilny z każdym backendem GUI
+        ctx = self.ctx
+        sm = self.sm
+        dialog = sm.createInstanceWithContext("com.sun.star.awt.UnoControlDialog", ctx)
+        model = sm.createInstanceWithContext("com.sun.star.awt.UnoControlDialogModel", ctx)
+        dialog.setModel(model)
+        model.Title = title; model.Width = 300; model.Height = 100
+        
+        lbl = model.createInstance("com.sun.star.awt.UnoControlFixedTextModel")
+        lbl.PositionX = 10; lbl.PositionY = 10; lbl.Width = 280; lbl.Height = 20
+        lbl.Label = message; model.insertByName("lbl", lbl)
+        
+        edt = model.createInstance("com.sun.star.awt.UnoControlEditModel")
+        edt.PositionX = 10; edt.PositionY = 35; edt.Width = 280; edt.Height = 20
+        edt.Text = str(default); model.insertByName("edt", edt)
+        
+        btn = model.createInstance("com.sun.star.awt.UnoControlButtonModel")
+        btn.PositionX = 100; btn.PositionY = 65; btn.Width = 100; btn.Height = 25
+        btn.Label = "OK"; btn.PushButtonType = 1; model.insertByName("btn", btn)
+        
+        frame = self.desktop.getCurrentFrame()
         window = frame.getContainerWindow() if frame else None
-        dialog.createPeer(create("com.sun.star.awt.Toolkit"), window)
-        if not x is None and not y is None:
-            ps = dialog.convertSizeToPixel(uno.createUnoStruct("com.sun.star.awt.Size", x, y), TWIP)
-            _x, _y = ps.Width, ps.Height
-        elif window:
-            ps = window.getPosSize()
-            _x = ps.Width / 2 - WIDTH / 2
-            _y = ps.Height / 2 - HEIGHT / 2
-        dialog.setPosSize(_x, _y, 0, 0, POS)
-        edit = dialog.getControl("edit")
-        edit.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(default))))
-        edit.setFocus()
-        ret = edit.getModel().Text if dialog.execute() else ""
-        dialog.dispose()
-        return ret
-
-    def settings_box(self,title="", x=None, y=None):
-        """ Shows dialog with input box.
-            @param message message to show on the dialog
-            @param title window title
-            @param default default value
-            @param x optional dialog position in twips
-            @param y optional dialog position in twips
-            @return string if OK button pushed, otherwise zero length string
-        """
-        WIDTH = 600
-        HORI_MARGIN = VERT_MARGIN = 8
-        BUTTON_WIDTH = 100
-        BUTTON_HEIGHT = 26
-        HORI_SEP = 8
-        VERT_SEP = 4
-        LABEL_HEIGHT = BUTTON_HEIGHT  + 5
-        EDIT_HEIGHT = 24
-        HEIGHT = VERT_MARGIN * 6 + LABEL_HEIGHT * 6 + VERT_SEP * 8 + EDIT_HEIGHT * 6
-        import uno
-        from com.sun.star.awt.PosSize import POS, SIZE, POSSIZE
-        from com.sun.star.awt.PushButtonType import OK, CANCEL
-        from com.sun.star.util.MeasureUnit import TWIP
-        ctx = uno.getComponentContext()
-        def create(name):
-            return ctx.getServiceManager().createInstanceWithContext(name, ctx)
-        dialog = create("com.sun.star.awt.UnoControlDialog")
-        dialog_model = create("com.sun.star.awt.UnoControlDialogModel")
-        dialog.setModel(dialog_model)
-        dialog.setVisible(False)
-        dialog.setTitle(title)
-        dialog.setPosSize(0, 0, WIDTH, HEIGHT, SIZE)
-        def add(name, type, x_, y_, width_, height_, props):
-            model = dialog_model.createInstance("com.sun.star.awt.UnoControl" + type + "Model")
-            dialog_model.insertByName(name, model)
-            control = dialog.getControl(name)
-            control.setPosSize(x_, y_, width_, height_, POSSIZE)
-            for key, value in props.items():
-                setattr(model, key, value)
-        label_width = WIDTH - BUTTON_WIDTH - HORI_SEP - HORI_MARGIN * 2
-        add("label_endpoint", "FixedText", HORI_MARGIN, VERT_MARGIN, label_width, LABEL_HEIGHT, 
-            {"Label": "Endpoint URL/Port:", "NoLabel": True})
-        add("btn_ok", "Button", HORI_MARGIN + label_width + HORI_SEP, VERT_MARGIN, 
-                BUTTON_WIDTH, BUTTON_HEIGHT, {"PushButtonType": OK, "DefaultButton": True})
-        add("edit_endpoint", "Edit", HORI_MARGIN, LABEL_HEIGHT,
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("endpoint","http://127.0.0.1:5000"))})
+        dialog.createPeer(sm.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx), window)
         
-        add("label_model", "FixedText", HORI_MARGIN, LABEL_HEIGHT + VERT_MARGIN + VERT_SEP + EDIT_HEIGHT, label_width, LABEL_HEIGHT, 
-            {"Label": "Model (Required by Ollama):", "NoLabel": True})
-        add("edit_model", "Edit", HORI_MARGIN, LABEL_HEIGHT*2 + VERT_MARGIN + VERT_SEP*2 + EDIT_HEIGHT, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("model",""))})
+        if dialog.execute(): return dialog.getControl("edt").getModel().Text
+        return ""
+
+    def show_settings_dialog(self):
+        config = self.load_config()
+        active = self.get_active_profile_settings(config)
         
-        add("label_extend_selection_max_tokens", "FixedText", HORI_MARGIN, LABEL_HEIGHT*3 + VERT_MARGIN + VERT_SEP*3 + EDIT_HEIGHT, label_width, LABEL_HEIGHT, 
-            {"Label": "Extend Selection Max Tokens:", "NoLabel": True})
-        add("edit_extend_selection_max_tokens", "Edit", HORI_MARGIN, LABEL_HEIGHT*4 + VERT_MARGIN + VERT_SEP*4 + EDIT_HEIGHT, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("extend_selection_max_tokens","70"))})
+        url = self.input_box(f"Endpoint URL ({active['name']}):", "Konfiguracja", active['url'])
+        if not url: return
+        model = self.input_box("Nazwa modelu:", "Konfiguracja", active['model'])
         
-        add("label_extend_selection_system_prompt", "FixedText", HORI_MARGIN, LABEL_HEIGHT*5 + VERT_MARGIN + VERT_SEP*5 + EDIT_HEIGHT, label_width, LABEL_HEIGHT, 
-            {"Label": "Extend Selection System Prompt:", "NoLabel": True})
-        add("edit_extend_selection_system_prompt", "Edit", HORI_MARGIN, LABEL_HEIGHT*6 + VERT_MARGIN + VERT_SEP*6 + EDIT_HEIGHT, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("extend_selection_system_prompt",""))})
+        key_prompt = "Podaj API Key:"
+        if active['auth_type'] == 'bearer': key_prompt = "Podaj Identity Token (gcloud auth print-identity-token):"
+        key = self.input_box(key_prompt, "Autoryzacja", active['api_key'])
 
-        add("label_edit_selection_max_new_tokens", "FixedText", HORI_MARGIN, LABEL_HEIGHT*7 + VERT_MARGIN + VERT_SEP*7 + EDIT_HEIGHT, label_width, LABEL_HEIGHT, 
-            {"Label": "Edit Selection Max New Tokens:", "NoLabel": True})
-        add("edit_edit_selection_max_new_tokens", "Edit", HORI_MARGIN, LABEL_HEIGHT*8 + VERT_MARGIN + VERT_SEP*8 + EDIT_HEIGHT, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("edit_selection_max_new_tokens",""))})
+        pk = active['key']
+        if pk not in config["profiles"]: config["profiles"][pk] = {}
+        config["profiles"][pk].update({"url": url, "model": model, "api_key": key})
+        self.save_config(config)
+        self.msg_box("Zapisano.")
 
-        add("label_edit_selection_system_prompt", "FixedText", HORI_MARGIN, LABEL_HEIGHT*9 + VERT_MARGIN + VERT_SEP*9 + EDIT_HEIGHT, label_width, LABEL_HEIGHT, 
-            {"Label": "Edit Selection System Prompt:", "NoLabel": True})
-        add("edit_edit_selection_system_prompt", "Edit", HORI_MARGIN, LABEL_HEIGHT*10 + VERT_MARGIN + VERT_SEP*10 + EDIT_HEIGHT, 
-                WIDTH - HORI_MARGIN * 2, EDIT_HEIGHT, {"Text": str(self.get_config("edit_selection_system_prompt",""))})
+    def msg_box(self, message):
+        try:
+            parent = self.desktop.getCurrentFrame().getContainerWindow()
+            tk = self.sm.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
+            tk.createMessageBox(parent, "INFOBOX", 1, "localwriter", message).execute()
+        except: pass
 
-
-
-        frame = create("com.sun.star.frame.Desktop").getCurrentFrame()
-        window = frame.getContainerWindow() if frame else None
-        dialog.createPeer(create("com.sun.star.awt.Toolkit"), window)
-        if not x is None and not y is None:
-            ps = dialog.convertSizeToPixel(uno.createUnoStruct("com.sun.star.awt.Size", x, y), TWIP)
-            _x, _y = ps.Width, ps.Height
-        elif window:
-            ps = window.getPosSize()
-            _x = ps.Width / 2 - WIDTH / 2
-            _y = ps.Height / 2 - HEIGHT / 2
-        dialog.setPosSize(_x, _y, 0, 0, POS)
+    # --- KOMUNIKACJA SIECIOWA (Hardened for Cloud Run) ---
+    def call_llm(self, prompt, is_edit_mode=False):
+        config = self.load_config()
+        s = self.get_active_profile_settings(config)
         
-        edit_endpoint = dialog.getControl("edit_endpoint")
-        edit_endpoint.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("endpoint","http://127.0.0.1:5000")))))
-        
-        edit_model = dialog.getControl("edit_model")
-        edit_model.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("model","")))))
+        # Budowanie payloadu
+        messages = [{"role": "user", "content": prompt}]
+        sys_prompt = config["common"].get("system_prompt", "")
+        if sys_prompt: messages.insert(0, {"role": "system", "content": sys_prompt})
 
-        edit_extend_selection_max_tokens = dialog.getControl("edit_extend_selection_max_tokens")
-        edit_extend_selection_max_tokens.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("extend_selection_max_tokens","70")))))
-
-
-        edit_extend_selection_system_prompt = dialog.getControl("edit_extend_selection_system_prompt")
-        edit_extend_selection_system_prompt.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("extend_selection_system_prompt","")))))
-
-
-        edit_edit_selection_max_new_tokens = dialog.getControl("edit_edit_selection_max_new_tokens")
-        edit_edit_selection_max_new_tokens.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("edit_selection_max_new_tokens","0")))))
-
-        edit_edit_selection_system_prompt = dialog.getControl("edit_edit_selection_system_prompt")
-        edit_edit_selection_system_prompt.setSelection(uno.createUnoStruct("com.sun.star.awt.Selection", 0, len(str(self.get_config("edit_selection_system_prompt","")))))
-
-
-        edit_endpoint.setFocus()
-
-        if dialog.execute():
-            result = {"endpoint":edit_endpoint.getModel().Text, "model": edit_model.getModel().Text, "extend_selection_system_prompt": edit_extend_selection_system_prompt.getModel().Text, "edit_selection_system_prompt": edit_edit_selection_system_prompt.getModel().Text}
-            if edit_extend_selection_max_tokens.getModel().Text.isdigit():
-                result["extend_selection_max_tokens"] = int(edit_extend_selection_max_tokens.getModel().Text)
-            if edit_edit_selection_max_new_tokens.getModel().Text.isdigit():
-                result["edit_selection_max_new_tokens"] = int(edit_edit_selection_max_new_tokens.getModel().Text)
-
+        # Specyficzna obsługa Gemini (Google format) vs OpenAI format
+        if "gemini" in s['key']:
+            # Gemini native format (simplified adapter)
+            data = {
+                "contents": [{"parts": [{"text": prompt}]}]
+            }
+            # System prompt dla Gemini jest w innym polu, ale dla uproszczenia tutaj pomijamy
         else:
-            result = {}
+            # Standard OpenAI/Bielik/Claude-via-proxy format
+            data = {
+                "model": s['model'],
+                "messages": messages,
+                "temperature": 0.7,
+                "stream": False
+            }
+            if not is_edit_mode: data["max_tokens"] = int(config["common"].get("extend_max_tokens", 200))
 
-        dialog.dispose()
-        return result
-    #end sharealike section 
+        json_data = json.dumps(data).encode('utf-8')
+        headers = {'Content-Type': 'application/json'}
+
+        # Autoryzacja
+        if s['auth_type'] == 'bearer' and s['api_key']:
+            headers['Authorization'] = f"Bearer {s['api_key']}"
+        elif s['auth_type'] == 'header_x_api_key' and s['api_key']:
+            headers['x-api-key'] = s['api_key']
+            headers['anthropic-version'] = '2023-06-01'
+        
+        # URL adjustments
+        req_url = s['url']
+        if s['auth_type'] == 'api_key_query' and s['api_key']:
+            separator = "&" if "?" in req_url else "?"
+            req_url += f"{separator}key={s['api_key']}"
+
+        req = urllib.request.Request(req_url, data=json_data, headers=headers, method='POST')
+
+        try:
+            # WAŻNE: timeout=120 sekund dla Cloud Run Cold Start i o3-pro reasoning
+            with urllib.request.urlopen(req, timeout=120) as response:
+                res_body = response.read().decode('utf-8')
+                result = json.loads(res_body)
+                
+                # Parsowanie odpowiedzi (Adaptery)
+                if "gemini" in s['key']:
+                    try: return result['candidates'][0]['content']['parts'][0]['text']
+                    except: return f"Gemini Error: {str(result)}"
+                elif "content" in result: # Claude native direct
+                    return result['content'][0]['text']
+                elif "choices" in result: # OpenAI / Bielik standard
+                    if "text" in result["choices"][0]: return result["choices"][0]["text"]
+                    return result["choices"][0]["message"]["content"]
+                else:
+                    return f"Nieznany format: {str(result)}"
+                    
+        except urllib.error.HTTPError as e:
+            return f"Błąd HTTP {e.code}: {e.read().decode('utf-8')}"
+        except Exception as e:
+            return f"Błąd połączenia ({s['name']}): {str(e)}"
 
     def trigger(self, args):
-        desktop = self.ctx.ServiceManager.createInstanceWithContext(
-            "com.sun.star.frame.Desktop", self.ctx)
-        model = desktop.getCurrentComponent()
-        #if not hasattr(model, "Text"):
-        #    model = self.desktop.loadComponentFromURL("private:factory/swriter", "_blank", 0, ())
-
-        if hasattr(model, "Text"):
-            text = model.Text
-            selection = model.CurrentController.getSelection()
-            text_range = selection.getByIndex(0)
-
-            
-            if args == "ExtendSelection":
-                # Access the current selection
-                #selection = model.CurrentController.getSelection()
-                
-                if len(text_range.getString()) > 0:
-                    # Get the first range of the selection
-                    #text_range = selection.getByIndex(0)
-                    try:
-
-                        url = self.get_config("endpoint", "http://127.0.0.1:5000") + "/v1/completions" 
-                        
-                        
-                        headers = {
-                            'Content-Type': 'application/json',
-                            'method' :'POST'
-                        }
-
-                        prompt = None
-                        if self.get_config("extend_selection_system_prompt", "") != "":
-                            prompt = "SYSTEM PROMPT\n" + self.get_config("extend_selection_system_prompt", "") + "\nEND SYSTEM PROMPT\n" + text_range.getString()
-                        else:
-                            prompt = text_range.getString()
-
-                        data = {
-                            'prompt': prompt,
-                            'max_tokens': self.get_config("extend_selection_max_tokens", 70),
-                            'temperature': 1,
-                            'top_p': 0.9,
-                            'seed': 10,
-                            'stream': True
-                        }
-
-                        model = self.get_config("model", "")
-                        if model != "":
-                            data["model"] = model
-
-
-                        # Convert data to JSON format
-                        json_data = json.dumps(data).encode('utf-8')
-
-                        # Create a request object with the URL, data, and headers
-                        request = urllib.request.Request(url, data=json_data, headers=headers, method='POST')
-
-
-                        toolkit = self.ctx.getServiceManager().createInstanceWithContext(
-                            "com.sun.star.awt.Toolkit", self.ctx
-                        )
-
-                        # Send the request and read the response
-                        with urllib.request.urlopen(request) as response:
-                            for line in response:
-                                try:
-                                    if line.strip():  # skip empty keep-alive lines
-                                        if line.startswith(b"data: "):
-                                            payload = line[len(b"data: "):].decode("utf-8")
-                                            chunk = json.loads(payload)
-                                            if chunk["choices"][0]["finish_reason"] != None:
-                                                break
-                                            selected_text = text_range.getString()
-                                            new_text = selected_text + str(chunk["choices"][0]["text"])
-                                            text_range.setString(new_text)
-                                            toolkit.processEventsToIdle()   # let the UI catch up      
-                                except Exception as e:
-                                    selected_text = text_range.getString()
-                                    new_text = selected_text + str(e)
-                                    text_range.setString(new_text)
-                                    toolkit.processEventsToIdle()   # let the UI catch up      
-
-                                    # ignore parse errors
-                                    pass 
-                                      
-                    except Exception as e:
-                        text_range = selection.getByIndex(0)
-                        # Append the user input to the selected text
-                        text_range.setString(text_range.getString() + ": " + str(e))
-
-            elif args == "EditSelection":
-                # Access the current selection
-                try:
-                    user_input= self.input_box("Please enter edit instructions!", "Input", "")
-                    #text_range.setString(text_range.getString() + ": " + user_input)
-                    url = self.get_config("endpoint", "http://127.0.0.1:5000") + "/v1/completions" 
-
-                    headers = {
-                        'Content-Type': 'application/json'
-                    }
-
-                    prompt =  "ORIGINAL VERSION:\n" + text_range.getString() + "\n Below is an edited version according to the following instructions. There are no comments in the edited version. The edited version is followed by the end of the document. The original version will be edited as follows to create the edited versio:\n" + user_input + "\nEDITED VERSION:\n"
-
-                    if self.get_config("edit_selection_system_prompt", "") != "":
-                        prompt = "SYSTEM PROMPT\n" + self.get_config("edit_selection_system_prompt","") + "\nEND SYSTEM PROMPT\n" + prompt
-
-
-                    data = {
-                        'prompt':prompt,
-                        'max_tokens': len(text_range.getString()) + self.get_config("edit_selection_max_new_tokens", 0), # this is a bit hacky, it's actually number of characters + max new tokens, so even if max new tokens is zero, max_tokens will often end up with more tokens than the selected text actually contains.
-                        'temperature': 1,
-                        'top_p': 0.9,
-                        'seed': 10,
-                        'stream':True
-                    }
-
-                    model = self.get_config("model", "")
-                    if model != "":
-                        data["model"] = model
-
-                    # Convert data to JSON format
-                    json_data = json.dumps(data).encode('utf-8')
-
-                    # Create a request object with the URL, data, and headers
-                    request = urllib.request.Request(url, data=json_data, headers=headers, method='POST')
-
-                    
-                    toolkit = self.ctx.getServiceManager().createInstanceWithContext(
-                                            "com.sun.star.awt.Toolkit", self.ctx
-                                        )
-
-
-
-                     # Send the request and read the response
-                    text_range.setString("")
-                    with urllib.request.urlopen(request) as response:
-                        for line in response:
-                            try:
-                                if line.strip():  # skip empty keep-alive lines
-                                    if line.startswith(b"data: "):
-                                        payload = line[len(b"data: "):].decode("utf-8")
-                                        chunk = json.loads(payload)
-                                        if chunk["choices"][0]["finish_reason"] != None:
-                                            break
-                                        selected_text = text_range.getString()
-                                        new_text = selected_text + str(chunk["choices"][0]["text"])
-                                        text_range.setString(new_text)
-                                        toolkit.processEventsToIdle()   # let the UI catch up      
-                            except Exception as e:
-                                selected_text = text_range.getString()
-                                new_text = selected_text + str(e)
-                                text_range.setString(new_text)
-                                toolkit.processEventsToIdle()   # let the UI catch up      
-
-                                # ignore parse errors
-                                pass 
-
-                except Exception as e:
-                    text_range = selection.getByIndex(0)
-                    # Append the user input to the selected text
-                    text_range.setString(text_range.getString() + ": " + str(e))
-            
-            elif args == "settings":
-                try:
-
-                    result = self.settings_box("Settings")
-                                    
-                    if "extend_selection_max_tokens" in result:
-                        self.set_config("extend_selection_max_tokens", result["extend_selection_max_tokens"])
-
-                    if "extend_selection_system_prompt" in result:
-                        self.set_config("extend_selection_system_prompt", result["extend_selection_system_prompt"])
-
-                    if "edit_selection_max_new_tokens" in result:
-                        self.set_config("edit_selection_max_new_tokens", result["edit_selection_max_new_tokens"])
-
-                    if "edit_selection_system_prompt" in result:
-                        self.set_config("edit_selection_system_prompt", result["edit_selection_system_prompt"])
-
-                    if "endpoint" in result and result["endpoint"].startswith("http"):
-                        self.set_config("endpoint", result["endpoint"])
-
-                    if "model" in result:                
-                        self.set_config("model", result["model"])
-
-
-                except Exception as e:
-                    text_range = selection.getByIndex(0)
-                    # Append the user input to the selected text
-                    text_range.setString(text_range.getString() + ":error: " + str(e))
-        elif hasattr(model, "Sheets"):
-            try:
-                #text_range.setString(text_range.getString() + ": " + user_input)
-                url = self.get_config("endpoint", "http://127.0.0.1:5000") + "/v1/completions" 
-                # Get the active sheet
-                sheet = model.CurrentController.ActiveSheet
-                
-                # Get the current selection (which could be a range of cells)
-                selection = model.CurrentController.Selection
-                
-
-                if args == "EditSelection":
-                    user_input= self.input_box("Please enter edit instructions!", "Input", "")
-
-
-                area = selection.getRangeAddress()
-                start_row = area.StartRow
-                end_row = area.EndRow
-                start_col = area.StartColumn
-                end_col = area.EndColumn
-
-                col_range = range(start_col, end_col + 1)
-                row_range = range(start_row, end_row + 1)
-
-                for row in row_range:
-                    new_values = []
-                    for col in col_range:
-                        cell = sheet.getCellByPosition(col, row)
-
-
-                        if args == "ExtendSelection":
-                            
-                            if len(cell.getString()) > 0:
-                                try:
-
-                                    url = self.get_config("endpoint", "http://127.0.0.1:5000") + "/v1/completions" 
-                                    
-                                    
-                                    headers = {
-                                        'Content-Type': 'application/json'
-                                    }
-
-                                    prompt = None
-                                    if self.get_config("extend_selection_system_prompt", "") != "":
-                                        prompt = "SYSTEM PROMPT\n" + self.get_config("extend_selection_system_prompt", "") + "\nEND SYSTEM PROMPT\n" + cell.getString()
-                                    else:
-                                        prompt = cell.getString()
-
-                                    data = {
-                                        'prompt': prompt,
-                                        'max_tokens': self.get_config("extend_selection_max_tokens", 70),
-                                        'temperature': 1,
-                                        'top_p': 0.9,
-                                        'seed': 10,
-                                        'stream': True
-                                    }
-
-                                    model = self.get_config("model", "")
-                                    if model != "":
-                                        data["model"] = model
-
-
-                                    # Convert data to JSON format
-                                    json_data = json.dumps(data).encode('utf-8')
-
-                                    # Create a request object with the URL, data, and headers
-                                    request = urllib.request.Request(url, data=json_data, headers=headers, method='POST')
-
-                                    # Send the request and read the response
-                                    toolkit = self.ctx.getServiceManager().createInstanceWithContext(
-                                        "com.sun.star.awt.Toolkit", self.ctx
-                                    )
-
-                                    # Send the request and read the response
-                                    with urllib.request.urlopen(request) as response:
-                                        for line in response:
-                                            try:
-                                                if line.strip():  # skip empty keep-alive lines
-                                                    if line.startswith(b"data: "):
-                                                        payload = line[len(b"data: "):].decode("utf-8")
-                                                        chunk = json.loads(payload)
-                                                        if chunk["choices"][0]["finish_reason"] != None:
-                                                            break
-                                                        selected_text = cell.getString()
-                                                        new_text = selected_text + str(chunk["choices"][0]["text"])
-                                                        cell.setString(new_text)
-                                                        toolkit.processEventsToIdle()   # let the UI catch up      
-                                            except Exception as e:
-                                                selected_text = cell.getString()
-                                                new_text = selected_text + str(e)
-                                                cell.setString(new_text)
-                                                toolkit.processEventsToIdle()   # let the UI catch up      
-                                                # ignore parse errors
-                                                pass 
-
-                                except Exception as e:
-                                    # Append the user input to the selected text
-                                    cell.setString(cell.getString() + ": " + str(e))
-                        elif args == "EditSelection":
-                            # Access the current selection
-                            try:
-                                #text_range.setString(text_range.getString() + ": " + user_input)
-                                url = self.get_config("endpoint", "http://127.0.0.1:5000") + "/v1/completions" 
-
-                                headers = {
-                                    'Content-Type': 'application/json'
-                                }
-
-                                prompt =  "ORIGINAL VERSION:\n" + cell.getString() + "\n Below is an edited version according to the following instructions. Don't waste time thinking, be as fast as you can. The edited text does not end with a newline. There are no comments in the edited version. USER INSTRUCTIONS: \n" + user_input + "\nEDITED VERSION:\n"
-
-                                if self.get_config("edit_selection_system_prompt", "") != "":
-                                    prompt = "SYSTEM PROMPT\n" + self.get_config("edit_selection_system_prompt","") + "\nEND SYSTEM PROMPT\n" + prompt
-
-
-                                data = {
-                                    'prompt':prompt,
-                                    'max_tokens': len(cell.getString()) + self.get_config("edit_selection_max_new_tokens", 0), # this is a bit hacky, it's actually number of characters + max new tokens, so even if max new tokens is zero, max_tokens will often end up with more tokens than the selected text actually contains.
-                                    'temperature': 1,
-                                    'top_p': 0.9,
-                                    'seed': 10,
-                                    'stream': True
-                                }
-
-                                model = self.get_config("model", "")
-                                if model != "":
-                                    data["model"] = model
-
-                                # Convert data to JSON format
-                                json_data = json.dumps(data).encode('utf-8')
-
-                                # Create a request object with the URL, data, and headers
-                                request = urllib.request.Request(url, data=json_data, headers=headers, method='POST')
-
-   # Send the request and read the response
-                                toolkit = self.ctx.getServiceManager().createInstanceWithContext(
-                                    "com.sun.star.awt.Toolkit", self.ctx
-                                )
-
-                                cell.setString("")
-
-                                # Send the request and read the response
-                                with urllib.request.urlopen(request) as response:
-                                    for line in response:
-                                        try:
-                                            if line.strip():  # skip empty keep-alive lines
-                                                if line.startswith(b"data: "):
-                                                    payload = line[len(b"data: "):].decode("utf-8")
-                                                    chunk = json.loads(payload)
-                                                    if chunk["choices"][0]["finish_reason"] != None:
-                                                        break
-                                                    selected_text = cell.getString()
-                                                    new_text = selected_text + str(chunk["choices"][0]["text"])
-                                                    cell.setString(new_text)
-                                                    toolkit.processEventsToIdle()   # let the UI catch up      
-                                        except Exception as e:
-                                            selected_text = cell.getString()
-                                            new_text = selected_text + str(e)
-                                            cell.setString(new_text)
-                                            toolkit.processEventsToIdle()   # let the UI catch up      
-                                            # ignore parse errors
-                                            pass 
-
-
-                            except Exception as e:
-                                # Append the user input to the selected text
-                                cell.setString(cell.getString() + ": " + str(e))
-                        
-                        elif args == "settings":
-                            try:
-
-                                result = self.settings_box("Settings")
-                                                
-                                if "extend_selection_max_tokens" in result:
-                                    self.set_config("extend_selection_max_tokens", result["extend_selection_max_tokens"])
-
-                                if "extend_selection_system_prompt" in result:
-                                    self.set_config("extend_selection_system_prompt", result["extend_selection_system_prompt"])
-
-                                if "edit_selection_max_new_tokens" in result:
-                                    self.set_config("edit_selection_max_new_tokens", result["edit_selection_max_new_tokens"])
-
-                                if "edit_selection_system_prompt" in result:
-                                    self.set_config("edit_selection_system_prompt", result["edit_selection_system_prompt"])
-
-                                if "endpoint" in result and result["endpoint"].startswith("http"):
-                                    self.set_config("endpoint", result["endpoint"])
-
-                                if "model" in result:                
-                                    self.set_config("model", result["model"])
-
-
-                            except Exception as e:
-                                # Append the user input to the selected text
-                                cell.setString(cell.getString() + ":error: " + str(e))
-            except Exception as e:
-                pass
-
-# Starting from Python IDE
-def main():
-    try:
-        ctx = XSCRIPTCONTEXT
-    except NameError:
-        ctx = officehelper.bootstrap()
-        if ctx is None:
-            print("ERROR: Could not bootstrap default Office.")
-            sys.exit(1)
-    job = MainJob(ctx)
-    job.trigger("hello")
-# Starting from command line
-if __name__ == "__main__":
-    main()
-# pythonloader loads a static g_ImplementationHelper variable
+        if args.startswith("SwitchModel_"):
+            new_profile = args.replace("SwitchModel_", "")
+            config = self.load_config()
+            if new_profile in MODELS_REGISTRY:
+                config["current_profile"] = new_profile
+                self.save_config(config)
+                self.msg_box(f"Aktywowano: {MODELS_REGISTRY[new_profile]['name']}")
+            else: self.msg_box("Nieznany profil.")
+            return
+
+        if args == "Settings":
+            self.show_settings_dialog(); return
+
+        # Obsługa dokumentu
+        model = self.desktop.getCurrentComponent()
+        if not hasattr(model, "CurrentController"): return
+        sel = model.CurrentController.getSelection()
+        if not sel or sel.getCount() == 0: return
+        item = sel.getByIndex(0)
+        text = item.getString()
+        if not text: return
+
+        if args == "ExtendSelection":
+            res = self.call_llm(text, False)
+            item.setString(text + " " + res)
+        elif args == "EditSelection":
+            instr = self.input_box("Instrukcja edycji:", "Edycja")
+            if instr:
+                full_prompt = f"Tekst: {text}\nInstrukcja: {instr}\nPoprawiona wersja:"
+                res = self.call_llm(full_prompt, True)
+                item.setString(res)
+
+def main(): print("Uruchom w LibreOffice.")
 g_ImplementationHelper = unohelper.ImplementationHelper()
-g_ImplementationHelper.addImplementation(
-    MainJob,  # UNO object class
-    "org.extension.sample.do",  # implementation name (customize for yourself)
-    ("com.sun.star.task.Job",), )  # implemented services (only 1)
-# vim: set shiftwidth=4 softtabstop=4 expandtab:
+g_ImplementationHelper.addImplementation(MainJob, "org.extension.sample.do", ("com.sun.star.task.Job",), )

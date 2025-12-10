@@ -1,26 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <description
   xmlns="http://openoffice.org/extensions/description/2006"
-  xmlns:dep="http://openoffice.org/extensions/description/2006"
   xmlns:xlink="http://www.w3.org/1999/xlink">
-    <identifier value="org.extension.sample"/>
-    <version value="0.0.8"/>
+    <identifier value="org.extension.neuroatypowi.cloud"/>
+    <version value="1.0.0-jdk17-safe"/>
     <registration>
         <simple-license accept-by="admin" default-license-id="ID0" suppress-on-update="true" >
             <license-text xlink:href="registration/license.txt" lang="en" license-id="ID0" />
         </simple-license>
     </registration>
     <publisher>
-        <name xlink:href="mailto:mylastnameumyfirstname@gmail.com">Developer</name>
+        <name xlink:href="mailto:dev@neuroatypowi.org">Neuroatypowi AI Team</name>
     </publisher>
     <display-name>
-        <name>localwriter</name>
+        <name>Asystent Prawny (Google Cloud First)</name>
     </display-name>
-
   <icon>
-  <default xlink:href="assets/logo.png"/>
+    <default xlink:href="assets/logo.png"/>
   </icon>
-
-  
-
 </description>
