@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="POLONISTA v2.0 - Asystent Prostego Języka dla LibreOffice Writer">
+    <title>POLONISTA v2.0 — Poradnik Instalacji</title>
+    <style>
+        :root {
+            --primary: #1e3a5f;
+            --secondary: #2d5a87;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --error: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --bg: #fff;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--bg);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            font-size: 16px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            border-bottom: 4px solid var(--accent);
+            padding-bottom: 15px;
+            margin-top: 0;
+            font-size: 2em;
+        }
+        
+        h2 {
+            color: var(--secondary);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin-top: 40px;
+            font-size: 1.5em;
+        }
+        
+        h3 {
+            color: var(--dark);
+            margin-top: 25px;
+            font-size: 1.2em;
+        }
+        
+        .executive-summary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        
+        .executive-summary h2 {
+            color: white;
+            border-left: 5px solid var(--accent);
+            margin-top: 0;
+        }
+        
+        .analogy {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            font-style: italic;
+            margin: 15px 0;
+        }
+        
+        .toc {
+            background: var(--light);
+            padding: 20px 30px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        
+        .toc h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        
+        .toc ol {
+            columns: 2;
+            column-gap: 30px;
+        }
+        
+        .toc a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+            color: var(--accent);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        tr:hover {
+            background: #f0f7ff;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .success-box {
+            background: #d4edda;
+            border-left: 5px solid var(--success);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid var(--warning);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .error-box {
+            background: #f8d7da;
+            border-left: 5px solid var(--error);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .step {
+            background: var(--light);
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            counter-increment: step;
+        }
+        
+        .step::before {
+            content: "Krok " counter(step) ": ";
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .steps-container {
+            counter-reset: step;
+        }
+        
+        ul.check-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        ul.check-list li {
+            padding: 8px 0 8px 35px;
+            position: relative;
+        }
+        
+        ul.check-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        ul.cross-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        ul.cross-list li {
+            padding: 8px 0 8px 35px;
+            position: relative;
+        }
+        
+        ul.cross-list li::before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: var(--error);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .bibliography {
+            margin-top: 40px;
+        }
+        
+        .bibliography table {
+            font-size: 0.85em;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body {
+                max-width: 100%;
+                padding: 0;
+                font-size: 11pt;
+            }
+            
+            h1 {
+                page-break-after: avoid;
+            }
+            
+            h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            .toc {
+                page-break-after: always;
+            }
+            
+            pre {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+            
+            .executive-summary {
+                background: #f0f0f0 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .toc ol {
+                columns: 1;
+            }
+            
+            table {
+                font-size: 0.85em;
+            }
+            
+            td, th {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>🇵🇱 POLONISTA v2.0</h1>
+<p><strong>Asystent Prostego Języka dla LibreOffice Writer z integracją NVIDIA Bielik-11B</strong></p>
+
+<div class="executive-summary">
+    <h2>📋 Streszczenie</h2>
+    <div class="analogy">
+        <strong>POLONISTA działa jak tłumacz</strong>, który zamienia trudne teksty na proste. 
+        Tak jak Google Translate tłumaczy między językami, POLONISTA "tłumaczy" skomplikowany 
+        tekst urzędowy na język zrozumiały dla każdego.
+    </div>
+    <p><strong>Co robi program:</strong> Zaznaczasz tekst → Klikasz przycisk → Tekst staje się prostszy.</p>
+    <p><strong>Dla kogo:</strong> Dla osób piszących dokumenty, które muszą być zrozumiałe dla wszystkich.</p>
+</div>
+
+<nav class="toc">
+    <h2>📑 Spis Treści</h2>
+    <ol>
+        <li><a href="#wymagania">Wymagania systemowe</a></li>
+        <li><a href="#api-key">Pobieranie klucza API</a></li>
+        <li><a href="#instalacja">Instalacja makra</a></li>
+        <li><a href="#konfiguracja">Konfiguracja klucza API</a></li>
+        <li><a href="#uzytkowanie">Użytkowanie programu</a></li>
+        <li><a href="#problemy">Rozwiązywanie problemów</a></li>
+        <li><a href="#localwriter">Proponowane zmiany dla localwriter</a></li>
+        <li><a href="#techniczna">Dokumentacja techniczna</a></li>
+        <li><a href="#bibliografia">Bibliografia</a></li>
+    </ol>
+</nav>
+
+<h2 id="wymagania">1. Wymagania systemowe</h2>
+
+<h3>✅ Co musisz mieć</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Element</th>
+            <th>Wymaganie</th>
+            <th>Jak sprawdzić</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>System operacyjny</td>
+            <td>Windows 10/11</td>
+            <td>Menu Start → Ustawienia → System → Informacje</td>
+        </tr>
+        <tr>
+            <td>LibreOffice Writer</td>
+            <td>Wersja 7.0 lub nowsza</td>
+            <td>Pomoc → O programie LibreOffice</td>
+        </tr>
+        <tr>
+            <td>Internet</td>
+            <td>Stałe połączenie</td>
+            <td>Otwórz przeglądarkę i wejdź na google.pl</td>
+        </tr>
+        <tr>
+            <td>Konto NVIDIA</td>
+            <td>Bezpłatne</td>
+            <td>Zarejestruj na build.nvidia.com</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>❌ Co NIE jest potrzebne</h3>
+
+<ul class="cross-list">
+    <li>Karta graficzna NVIDIA (model działa w chmurze)</li>
+    <li>Instalacja Pythona (LibreOffice ma wbudowanego)</li>
+    <li>Dodatkowe biblioteki lub pakiety</li>
+    <li>Uprawnienia administratora (opcjonalnie)</li>
+</ul>
+
+<h2 id="api-key">2. Pobieranie klucza API</h2>
+
+<div class="steps-container">
+    <div class="step">Otwórz przeglądarkę i wejdź na adres: <code>https://build.nvidia.com</code></div>
+    <div class="step">Kliknij przycisk <strong>"Sign In"</strong> (Zaloguj się) w prawym górnym rogu.</div>
+    <div class="step">Utwórz konto lub zaloguj się przez Google, GitHub lub email firmowy.</div>
+    <div class="step">W wyszukiwarce wpisz: <code>bielik</code></div>
+    <div class="step">Wybierz model: <strong>speakleash/bielik-11b-v2.6-instruct</strong></div>
+    <div class="step">Kliknij przycisk <strong>"Get API Key"</strong> (Pobierz klucz API)</div>
+    <div class="step">Skopiuj klucz. Wygląda tak: <code>nvapi-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></div>
+</div>
+
+<div class="warning-box">
+    <strong>⚠️ Ważne:</strong> Klucz zaczyna się od <code>nvapi-</code>. Zachowaj go — będzie potrzebny w następnym kroku.
+</div>
+
+<h2 id="instalacja">3. Instalacja makra</h2>
+
+<h3>Gdzie umieścić plik</h3>
+
+<div class="steps-container">
+    <div class="step">Pobierz plik <code>polonista.py</code> ze strony neuroatypowi.org</div>
+    <div class="step">Otwórz Eksplorator plików (Windows + E)</div>
+    <div class="step">W pasku adresu wklej: <code>%APPDATA%\LibreOffice\4\user\Scripts\python</code></div>
+    <div class="step">Naciśnij Enter</div>
+    <div class="step">Skopiuj plik <code>polonista.py</code> do tego folderu</div>
+    <div class="step">Zamknij WSZYSTKIE okna LibreOffice</div>
+    <div class="step">Otwórz LibreOffice Writer ponownie</div>
+</div>
+
+<div class="info-box">
+    <strong>💡 Uwaga:</strong> Jeśli folder <code>python</code> nie istnieje, utwórz go: Kliknij prawym przyciskiem → Nowy → Folder → Nazwij: <code>python</code>
+</div>
+
+<h2 id="konfiguracja">4. Konfiguracja klucza API</h2>
+
+<h3>Edycja pliku polonista.py</h3>
+
+<div class="steps-container">
+    <div class="step">Otwórz folder z makrem (patrz sekcja 3)</div>
+    <div class="step">Kliknij prawym przyciskiem na plik <code>polonista.py</code></div>
+    <div class="step">Wybierz: <strong>Otwórz za pomocą → Notatnik</strong></div>
+    <div class="step">Znajdź linię (około linia 55):</div>
+</div>
+
+<pre><code>return "nvapi-TUTAJ_WKLEJ_SWOJ_KLUCZ_API"</code></pre>
+
+<div class="steps-container" style="counter-reset: step 4;">
+    <div class="step">Zamień <code>TUTAJ_WKLEJ_SWOJ_KLUCZ_API</code> na swój prawdziwy klucz</div>
+    <div class="step">Zapisz plik (Ctrl + S)</div>
+    <div class="step">Zamknij Notatnik</div>
+    <div class="step">Uruchom ponownie LibreOffice Writer</div>
+</div>
+
+<h2 id="uzytkowanie">5. Użytkowanie programu</h2>
+
+<h3>Jak upraszczać tekst</h3>
+
+<div class="steps-container">
+    <div class="step">Otwórz dokument w LibreOffice Writer</div>
+    <div class="step">Zaznacz tekst do uproszczenia (przeciągnij myszką)</div>
+    <div class="step">Menu: <strong>Narzędzia → Makra → Uruchom makro...</strong></div>
+    <div class="step">W oknie "Wybór makra": Rozwiń <strong>Moje makra → polonista</strong></div>
+    <div class="step">Wybierz: <strong>RedagujZaznaczenie</strong></div>
+    <div class="step">Kliknij przycisk: <strong>Uruchom</strong></div>
+    <div class="step">Poczekaj 3-10 sekund</div>
+</div>
+
+<div class="success-box">
+    <strong>✅ Gotowe!</strong> Zaznaczony tekst zostanie zastąpiony uproszczoną wersją.
+</div>
+
+<h3>Dostępne funkcje (makra)</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Funkcja</th>
+            <th>Opis</th>
+            <th>Kiedy użyć</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>RedagujZaznaczenie</strong></td>
+            <td>Upraszcza zaznaczony tekst</td>
+            <td>Główna funkcja — używaj najczęściej</td>
+        </tr>
+        <tr>
+            <td><strong>PokazInformacje</strong></td>
+            <td>Wyświetla informacje o programie</td>
+            <td>Gdy chcesz sprawdzić wersję</td>
+        </tr>
+        <tr>
+            <td><strong>SprawdzKonfiguracje</strong></td>
+            <td>Sprawdza czy klucz API jest poprawny</td>
+            <td>Przy pierwszym uruchomieniu</td>
+        </tr>
+        <tr>
+            <td><strong>TestPolaczenia</strong></td>
+            <td>Testuje połączenie z serwerem</td>
+            <td>Gdy coś nie działa</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 id="problemy">6. Rozwiązywanie problemów</h2>
+
+<h3>Problem 1: Makro nie jest widoczne w LibreOffice</h3>
+
+<div class="error-box">
+    <strong>Objaw:</strong> W oknie "Uruchom makro" nie ma folderu <code>polonista</code>
+</div>
+
+<p><strong>Przyczyna:</strong> Plik jest w złym miejscu lub LibreOffice nie odświeżył cache</p>
+
+<p><strong>Rozwiązanie:</strong></p>
+<ol>
+    <li>Sprawdź czy plik jest w: <code>%APPDATA%\LibreOffice\4\user\Scripts\python\polonista.py</code></li>
+    <li>Zamknij WSZYSTKIE okna LibreOffice</li>
+    <li>Poczekaj 10 sekund</li>
+    <li>Otwórz LibreOffice Writer</li>
+</ol>
+
+<h3>Problem 2: Funkcje makra nie są widoczne w polu "Nazwa makra"</h3>
+
+<div class="error-box">
+    <strong>Objaw:</strong> Folder <code>polonista</code> jest widoczny, ale po prawej stronie lista jest pusta
+</div>
+
+<p><strong>Przyczyna:</strong> Błąd składni w pliku Python lub nieprawidłowe kodowanie pliku</p>
+
+<p><strong>Rozwiązanie:</strong></p>
+<ol>
+    <li>Pobierz ponownie plik <code>polonista.py</code> ze strony neuroatypowi.org</li>
+    <li>Upewnij się, że plik jest zapisany jako UTF-8</li>
+    <li>Sprawdź czy nie ma polskich znaków w ścieżce do pliku</li>
+    <li>Usuń stary plik i wgraj nowy</li>
+</ol>
+
+<h3>Problem 3: Błąd "Nieprawidłowy klucz API"</h3>
+
+<div class="error-box">
+    <strong>Objaw:</strong> Po uruchomieniu makra pojawia się komunikat o błędzie klucza
+</div>
+
+<p><strong>Rozwiązanie:</strong></p>
+<ol>
+    <li>Otwórz plik polonista.py w Notatniku</li>
+    <li>Sprawdź czy klucz zaczyna się od <code>nvapi-</code></li>
+    <li>Sprawdź czy nie ma spacji przed ani po kluczu</li>
+    <li>Sprawdź czy klucz jest w cudzysłowach: <code>"nvapi-xxx"</code></li>
+</ol>
+
+<h3>Problem 4: Błąd "Limit zapytań"</h3>
+
+<div class="warning-box">
+    <strong>Objaw:</strong> Komunikat "[BLAD] Limit zapytan (429)"
+</div>
+
+<p><strong>Rozwiązanie:</strong> Poczekaj 1-2 minuty i spróbuj ponownie. Upraszczaj mniejsze fragmenty tekstu.</p>
+
+<h3>Problem 5: Brak połączenia z internetem</h3>
+
+<div class="warning-box">
+    <strong>Objaw:</strong> Komunikat "[BLAD] Brak polaczenia z internetem"
+</div>
+
+<p><strong>Rozwiązanie:</strong></p>
+<ol>
+    <li>Sprawdź połączenie internetowe (otwórz google.pl w przeglądarce)</li>
+    <li>Sprawdź czy firewall nie blokuje LibreOffice</li>
+    <li>Wyłącz VPN jeśli jest włączony</li>
+</ol>
+
+<h2 id="localwriter">7. Proponowane zmiany dla projektu localwriter</h2>
+
+<h3>Przegląd projektu</h3>
+
+<p>Projekt <strong>localwriter</strong> (<a href="https://github.com/balisujohn/localwriter">github.com/balisujohn/localwriter</a>) to rozszerzenie LibreOffice Writer umożliwiające lokalne przetwarzanie tekstu przez modele AI.</p>
+
+<h3>Zidentyfikowane błędy i proponowane poprawki</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Błąd</th>
+            <th>Kod oryginalny</th>
+            <th>Kod poprawiony</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Parsowanie odpowiedzi</strong></td>
+            <td><code>result['choices']['message']['content']</code></td>
+            <td><code>result['choices'][0]['message']['content']</code></td>
+        </tr>
+        <tr>
+            <td><strong>Inicjalizacja zmiennej</strong></td>
+            <td><code>redacted_paragraphs =</code></td>
+            <td><code>redacted_paragraphs = []</code></td>
+        </tr>
+        <tr>
+            <td><strong>Brak walidacji klucza</strong></td>
+            <td>Brak sprawdzenia</td>
+            <td>Funkcja <code>validate_api_key()</code></td>
+        </tr>
+        <tr>
+            <td><strong>Ciche błędy</strong></td>
+            <td><code>except: return ""</code></td>
+            <td><code>except Exception as e: show_error(e)</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Proponowana integracja z NVIDIA NIM</h3>
+
+<pre><code># Nowy backend dla localwriter: nvidia_nim_backend.py
+NVIDIA_NIM_CONFIG = {
+    "endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
+    "model": "speakleash/bielik-11b-v2.6-instruct",
+    "rate_limit": 40,  # requests per minute
+    "max_tokens": 2048
+}
+
+def create_nvidia_payload(text, system_prompt, temperature=0.3):
+    return {
+        "model": NVIDIA_NIM_CONFIG["model"],
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": text}
+        ],
+        "temperature": temperature,
+        "max_tokens": NVIDIA_NIM_CONFIG["max_tokens"],
+        "stream": False
+    }</code></pre>
+
+<h2 id="techniczna">8. Dokumentacja techniczna</h2>
+
+<h3>Architektura POLONISTA</h3>
+
+<pre><code>+------------------+     +------------------+     +------------------+
+|  LibreOffice     |     |    POLONISTA     |     |   NVIDIA NIM     |
+|  Writer          | --> |    Python Macro  | --> |   API Cloud      |
+|  (Zaznaczenie)   |     |    (polonista.py)|     |   (Bielik-11B)   |
++------------------+     +------------------+     +------------------+
+        |                        |                        |
+        v                        v                        v
+   Tekst źródłowy        Wywołanie HTTP/REST       Przetwarzanie AI
+                               |                        |
+                               +------------------------+
+                               |
+                               v
+                      Zamiana tekstu w dokumencie</code></pre>
+
+<h3>Specyfikacja API NVIDIA NIM</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Parametr</th>
+            <th>Wartość</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Endpoint</td><td>https://integrate.api.nvidia.com/v1/chat/completions</td></tr>
+        <tr><td>Model</td><td>speakleash/bielik-11b-v2.6-instruct</td></tr>
+        <tr><td>Metoda</td><td>POST</td></tr>
+        <tr><td>Content-Type</td><td>application/json</td></tr>
+        <tr><td>Authorization</td><td>Bearer {api_key}</td></tr>
+        <tr><td>Rate Limit</td><td>40 żądań/minutę</td></tr>
+        <tr><td>Max Tokens (output)</td><td>2048</td></tr>
+        <tr><td>Timeout</td><td>60 sekund</td></tr>
+    </tbody>
+</table>
+
+<h3>Kody błędów HTTP</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Kod</th>
+            <th>Znaczenie</th>
+            <th>Rozwiązanie</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>200</td><td>Sukces</td><td>—</td></tr>
+        <tr><td>401</td><td>Błąd autoryzacji</td><td>Sprawdź klucz API</td></tr>
+        <tr><td>429</td><td>Limit zapytań</td><td>Poczekaj i spróbuj ponownie</td></tr>
+        <tr><td>500</td><td>Błąd serwera</td><td>Spróbuj później</td></tr>
+    </tbody>
+</table>
+
+<h2 id="bibliografia" class="bibliography">9. Bibliografia</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Cytowanie APA 7</th>
+            <th>Łącze</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>NVIDIA Corporation. (2024). <em>NVIDIA NIM API documentation</em>. https://docs.nvidia.com/nim/</td>
+            <td><a href="https://docs.nvidia.com/nim/">docs.nvidia.com/nim</a></td>
+        </tr>
+        <tr>
+            <td>SpeakLeash. (2024). <em>Bielik-11B: Polish language model</em>. Hugging Face. https://huggingface.co/speakleash/bielik-11b-v2.6-instruct</td>
+            <td><a href="https://huggingface.co/speakleash/bielik-11b-v2.6-instruct">huggingface.co/speakleash</a></td>
+        </tr>
+        <tr>
+            <td>Balis, J. (2024). <em>localwriter: LibreOffice extension for local AI</em>. GitHub. https://github.com/balisujohn/localwriter</td>
+            <td><a href="https://github.com/balisujohn/localwriter">github.com/balisujohn/localwriter</a></td>
+        </tr>
+        <tr>
+            <td>The Document Foundation. (2024). <em>LibreOffice Python scripting guide</em>. https://wiki.documentfoundation.org/Macros/Python_Guide</td>
+            <td><a href="https://wiki.documentfoundation.org/Macros/Python_Guide">wiki.documentfoundation.org</a></td>
+        </tr>
+        <tr>
+            <td>ISO. (2023). <em>ISO 24495-1:2023 Plain language — Part 1</em>. International Organization for Standardization.</td>
+            <td><a href="https://www.iso.org/standard/78907.html">iso.org/standard/78907</a></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <p><strong>POLONISTA v2.0</strong> — Stowarzyszenie Zwykłe "Neuroatypowi"</p>
+    <p>🌐 <a href="https://neuroatypowi.org">neuroatypowi.org</a> | 📧 kontakt@neuroatypowi.org</p>
+    <p>Licencja: MIT | Data dokumentu: 2025-12-11</p>
+    <p><em>Dokument przygotowany zgodnie z normą ISO 24495-1:2023 (Prosty Język)</em></p>
+</div>
+
+</body>
+</html>

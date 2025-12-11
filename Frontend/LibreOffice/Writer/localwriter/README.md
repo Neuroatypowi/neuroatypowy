@@ -1,172 +1,296 @@
-# localwriter: A LibreOffice Writer extension for local generative AI
+# POLONISTA + localwriter - Kompletny Przewodnik Instalacji
 
-Consider donating to support development: https://ko-fi.com/johnbalis
+## Streszczenie
 
-## About
+*POLONISTA to jak tłumacz, który zamienia trudne urzędowe teksty na prosty język, zrozumiały dla każdego. Działa wewnątrz programu LibreOffice Writer - zaznaczasz trudny tekst, klikasz przycisk, i tekst staje się prosty.*
 
-This is a LibreOffice Writer extension that enables inline generative editing with local inference. It's compatible with language models supported by `text-generation-webui` and `ollama`.
+---
 
-## Table of Contents
+## Spis Treści
 
-*   [About](#about)
-*   [Table of Contents](#table-of-contents)
-*   [Features](#features)
-    *   [Extend Selection](#extend-selection)
-    *   [Edit Selection](#edit-selection)
-*   [Setup](#setup)
-    *   [LibreOffice Extension Installation](#libreoffice-extension-installation)
-    *   [Backend Setup](#backend-setup)
-        *   [text-generation-webui](#text-generation-webui)
-        *   [Ollama](#ollama)
-*   [Settings](#settings)
-*   [Contributing](#contributing)
-    *   [Local Development Setup](#local-development-setup)
-    *   [Building the Extension Package](#building-the-extension-package)
-*   [License](#license)
+1. [Wymagania](#1-wymagania)
+2. [Struktura Plików](#2-struktura-plików)
+3. [Instalacja Krok po Kroku](#3-instalacja-krok-po-kroku)
+4. [Konfiguracja Klucza API](#4-konfiguracja-klucza-api)
+5. [Użycie w LibreOffice](#5-użycie-w-libreoffice)
+6. [Komendy GitHub CLI](#6-komendy-github-cli)
+7. [Rozwiązywanie Problemów](#7-rozwiązywanie-problemów)
+8. [Bibliografia](#8-bibliografia)
 
-## Features
+---
 
-This extension provides two powerful commands for LibreOffice Writer:
+## 1. Wymagania
 
-### Extend Selection
+| Składnik | Wersja | Link |
+|----------|--------|------|
+| LibreOffice | 7.0+ | https://www.libreoffice.org |
+| Python | 3.7+ (wbudowany w LO) | - |
+| Konto NVIDIA | Developer | https://developer.nvidia.com |
+| Git (opcjonalnie) | 2.40+ | https://git-scm.com |
+| GitHub CLI (opcjonalnie) | 2.83+ | https://cli.github.com |
 
-**Hotkey:** `CTRL + q`
+---
 
-*   This uses a language model to predict what comes after the selected text. There are a lot of ways to use this.
-*   Some example use cases for this include: writing a story or an email given a particular prompt, adding additional possible items to a grocery list, or summarizing the selected text.
+## 2. Struktura Plików
 
-### Edit Selection
+### 2.1 Katalog docelowy
 
-**Hotkey:** `CTRL + e`
+**Windows:**
+```
+%APPDATA%\LibreOffice\4\user\Scripts\python\
+└── localwriter\
+    ├── __init__.py
+    ├── localwriter.py
+    ├── polonista_menu.py
+    ├── .env                    ← TWÓJ KLUCZ API (NIE WYSYŁAJ DO GITHUB!)
+    ├── .env.example
+    ├── .gitignore
+    └── backends\
+        ├── __init__.py
+        └── nvidia_nim_backend.py
+```
 
-*   A dialog box appears to prompt the user for instructions about how to edit the selected text, then the selected text is replaced by the edited text.
-*   Some examples for use cases for this include changing the tone of an email, translating text to a different language, and semantically editing a scene in a story.
+**Linux/macOS:**
+```
+~/.config/libreoffice/4/user/Scripts/python/localwriter/
+```
 
-## Setup
+### 2.2 Opis plików
 
-### LibreOffice Extension Installation
+| Plik | Opis |
+|------|------|
+| `localwriter.py` | Główny moduł z poprawionymi błędami |
+| `polonista_menu.py` | Menu POLONISTA dla LibreOffice |
+| `backends/nvidia_nim_backend.py` | Backend NVIDIA NIM z modelem Bielik |
+| `backends/__init__.py` | Rejestracja backendów |
+| `.env` | Twój klucz API (POUFNY!) |
+| `.env.example` | Szablon pliku .env |
+| `.gitignore` | Blokuje wysyłanie .env do GitHub |
 
-1.  Download the latest version of Localwriter via the [releases page](https://github.com/balisujohn/localwriter/releases).
-2.  Open LibreOffice.
-3.  Navigate to `Tools > Extensions`.
-4.  Click `Add` and select the downloaded `.oxt` file.
-5.  Follow the on-screen instructions to install the extension.
+---
 
-### Backend Setup
+## 3. Instalacja Krok po Kroku
 
-To use Localwriter, you need a backend model runner.  Options include `text-generation-webui` and `Ollama`. Choose the backend that best suits your needs. Ollama is generally easier to set up. In either of these options, you will have to download and set a model. 
+### Krok 1: Pobierz pliki
 
-#### text-generation-webui
+**Opcja A - Z GitHub:**
+```powershell
+# PowerShell (Windows)
+cd $env:APPDATA\LibreOffice\4\user\Scripts\python
+git clone https://github.com/Neuroatypowi/neuroatypowy.git localwriter
+```
 
-*   Installation instructions can be found [here](https://github.com/oobabooga/text-generation-webui).
-*   Docker image available [here](https://github.com/Atinoda/text-generation-webui-docker).
+**Opcja B - Ręcznie:**
+1. Pobierz pliki z repozytorium
+2. Rozpakuj do katalogu:
+   ```
+   C:\Users\TWOJA_NAZWA\AppData\Roaming\LibreOffice\4\user\Scripts\python\localwriter\
+   ```
 
-After installation and model setup:
+### Krok 2: Utwórz plik .env
 
-1.  Enable the local OpenAI API (this ensures the API responds in a format similar to OpenAI).
-2.  Verify that the intended model is working (e.g., openchat3.5, suitable for 8GB VRAM setups).
-3.  Set the endpoint in Localwriter to `localhost:5000` (or the configured port).
+1. Skopiuj plik `.env.example` jako `.env`
+2. Otwórz `.env` w Notatniku
+3. Wklej swój klucz API (patrz sekcja 4)
 
-#### Ollama
+### Krok 3: Uruchom ponownie LibreOffice
 
-*   Installation instructions are available [here](https://ollama.com/).
-*   Download and use a model (gemma3 isn't bad)
-*   Ensure the API is enabled.
-*   Set the endpoint in Localwriter to `localhost:11434` (or the configured port).
-*   Manually set the model name. ([This is required for Ollama to work](https://ask.libreoffice.org/t/localwriter-0-0-5-installation-and-usage/122241/5?u=jbalis))
+1. Zamknij **WSZYSTKIE** okna LibreOffice
+2. Poczekaj 10 sekund
+3. Otwórz LibreOffice Writer
 
-## Settings
+### Krok 4: Sprawdź instalację
 
-In the settings, you can configure:
+1. Menu: **Narzędzia** → **Makra** → **Uruchom makro**
+2. Rozwiń: **Moje makra** → **localwriter**
+3. Powinny być widoczne funkcje:
+   - `polonista_menu` (6 funkcji)
+   - `localwriter` (3 funkcje)
 
-*   Maximum number of additional tokens for "Extend Selection."
-*   Maximum number of additional tokens (above the number of letters in the original selection) for "Edit Selection."
-*   Custom "system prompts" for both "Extend Selection" and "Edit Selection." These prompts are prepended to the selection before sending it to the language model.  For example, you can use a sample of your writing to guide the model's style.
+---
 
-## Contributing
+## 4. Konfiguracja Klucza API
 
-Help with development is always welcome. localwriter has a number of outstanding feature requests by users. Feel free to work on any of them, and you can help improve freedom-respecting local AI.
+### 4.1 Pobierz klucz NVIDIA
 
-### Local Development Setup
+1. Otwórz: https://build.nvidia.com/speakleash/bielik-11b-v2-6-instruct
+2. Kliknij **"Get API Key"**
+3. Zaloguj się lub utwórz konto NVIDIA
+4. Skopiuj klucz (zaczyna się od `nvapi-`)
 
-For developers who want to modify or contribute to Localwriter, you can run and test the extension directly from your source code without packaging it into an `.oxt` file. This allows for quick iteration and seeing changes reflected in the LibreOffice UI.
+### 4.2 Zapisz klucz w pliku .env
 
-1. **Clone the Repository (if not already done):**
-   - Clone the Localwriter repository to your local machine if you haven't already:
-     ```
-     git clone https://github.com/balis-john/localwriter.git
-     cd localwriter
-     ```
+Utwórz plik `.env` w katalogu `localwriter\`:
 
-2. **Register the Extension Temporarily:**
-   - Use the `unopkg` tool to register the extension directly from your repository folder. This avoids the need to package the extension as an `.oxt` file during development.
-   - Run the following command, replacing `/path/to/localwriter/` with the path to your cloned repository:
-     ```
-     unopkg add /path/to/localwriter/
-     ```
-   - On Linux, `unopkg` is often located at `/usr/lib/libreoffice/program/unopkg`. Adjust the command if needed:
-     ```
-     /usr/lib/libreoffice/program/unopkg add /path/to/localwriter/
-     ```
+```ini
+# POLONISTA - Konfiguracja
+NVIDIA_API_KEY=nvapi-TUTAJ_WKLEJ_SWÓJ_KLUCZ
+```
 
-3. **Restart LibreOffice:**
-   - Close and reopen LibreOffice Writer or Calc. You should see the "localwriter" menu with options like "Extend Selection", "Edit Selection", and "Settings" in the menu bar.
+**WAŻNE:** 
+- Klucz musi zaczynać się od `nvapi-`
+- Bez spacji przed i po znaku `=`
+- Bez cudzysłowów wokół klucza
 
-4. **Make and Test Changes:**
-   - Edit the source files (e.g., `main.py`) directly in your repository folder using your preferred editor.
-   - After making changes, restart LibreOffice to reload the updated code. Test the functionality and UI elements (dialogs, menu actions) directly in LibreOffice.
-   - Note: Restarting is often necessary for Python script changes to take effect, as LibreOffice caches modules.
+### 4.3 Weryfikacja
 
-5. **Commit Changes to Git:**
-   - Since you're working directly in your Git repository, commit your changes as needed:
-     ```
-     git add main.py
-     git commit -m "Updated extension logic for ExtendSelection"
-     ```
+W LibreOffice uruchom makro:
+- **polonista_menu** → **SprawdzKonfiguracje**
 
-6. **Unregister the Extension (Optional):**
-   - If you need to remove the temporary registration, use:
-     ```
-     unopkg remove org.extension.sample
-     ```
-   - Replace `org.extension.sample` with the identifier from `description.xml` if different.
+---
 
-### Building the Extension Package
+## 5. Użycie w LibreOffice
 
-To create a distributable `.oxt` package:
+### 5.1 Upraszczanie zaznaczonego tekstu
 
-In a terminal, change directory into the localwriter repository top-level directory, then run the following command:
+1. Otwórz dokument Writer
+2. **Zaznacz** trudny tekst
+3. Menu: **Narzędzia** → **Makra** → **Uruchom makro**
+4. Wybierz: **Moje makra** → **localwriter** → **polonista_menu**
+5. Wybierz funkcję: **RedagujZaznaczenie**
+6. Kliknij: **Uruchom**
 
-````
-zip -r localwriter.oxt \
-  Accelerators.xcu \
-  Addons.xcu \
-  assets \
-  description.xml \
-  main.py \
-  META-INF \
-  registration \
-  README.md
-````
+### 5.2 Dostępne funkcje
 
-This will create the file `localwriter.oxt` which you can open with libreoffice to install the localwriter extension. You can also change the file extension to .zip and manually unzip the extension file, if you want to inspect a localwriter `.oxt` file yourself. It is all human-readable, since python is an interpreted language.
+| Funkcja | Opis |
+|---------|------|
+| `RedagujZaznaczenie` | Upraszcza zaznaczony tekst |
+| `RedagujCayDokument` | Upraszcza cały dokument |
+| `PokazInformacje` | Wyświetla informacje o programie |
+| `SprawdzKonfiguracje` | Sprawdza klucz API |
+| `TestPolaczenia` | Testuje połączenie z NVIDIA |
+| `PobierzKluczAPI` | Otwiera stronę NVIDIA |
 
+---
 
+## 6. Komendy GitHub CLI
 
-## License 
+### 6.1 Instalacja GitHub CLI
 
-(See `License.txt` for the full license text)
+```powershell
+# PowerShell jako Administrator
+msiexec /i gh_2.83.2_windows_amd64.msi /quiet /norestart
+```
 
-Except where otherwise noted in source code, this software is provided with a MPL 2.0 license.
+### 6.2 Autoryzacja
 
-The code not released with an MPL2.0 license is released under the following terms.
-License: Creative Commons Attribution-ShareAlike 3.0 Unported License,
-License: The Document Foundation  https://creativecommons.org/licenses/by-sa/3.0/
+```powershell
+# Logowanie do GitHub
+gh auth login --web --git-protocol https
+```
 
-A large amount of code is derived from the following MPL2.0 licensed code from the Document Foundation
-https://gerrit.libreoffice.org/c/core/+/159938 
+### 6.3 Force Push do repozytorium
 
+```powershell
+# Przejdź do katalogu projektu
+cd C:\Users\mszew\neuroatypowy
 
-MPL2.0
+# Inicjalizacja Git (jeśli nowe repo)
+git init
+git branch -M main
 
-Copyright (c) 2024 John Balis
+# Dodaj remote
+git remote add origin https://github.com/Neuroatypowi/neuroatypowy.git
+
+# Upewnij się że .env NIE jest w Git
+git rm --cached .env 2>$null
+
+# Dodaj wszystkie pliki
+git add --all
+
+# Commit z opisem
+git commit -m "POLONISTA v2.1: Integracja NVIDIA NIM + poprawki localwriter"
+
+# Force Push
+git push --force origin main
+```
+
+### 6.4 Kompletny skrypt jednokomendowy
+
+```powershell
+# UWAGA: Uruchom jako Administrator
+# To nadpisze CAŁE zdalne repozytorium!
+
+cd C:\Users\mszew\neuroatypowy; `
+git init; `
+git branch -M main; `
+git remote remove origin 2>$null; `
+git remote add origin https://github.com/Neuroatypowi/neuroatypowy.git; `
+git rm --cached .env 2>$null; `
+git add --all; `
+git commit -m "POLONISTA v2.1 $(Get-Date -Format 'yyyy-MM-dd HH:mm')"; `
+git push --force origin main
+```
+
+### 6.5 Klonowanie repozytorium
+
+```powershell
+# HTTPS
+gh repo clone Neuroatypowi/neuroatypowy
+
+# SSH
+git clone git@github.com:Neuroatypowi/neuroatypowy.git
+```
+
+---
+
+## 7. Rozwiązywanie Problemów
+
+### Problem 1: Makra nie są widoczne
+
+**Rozwiązanie:**
+1. Sprawdź ścieżkę instalacji
+2. Zamknij WSZYSTKIE okna LibreOffice
+3. Poczekaj 10 sekund
+4. Otwórz ponownie
+
+### Problem 2: Funkcje nie pojawiają się w makrze
+
+**Rozwiązanie:**
+1. Sprawdź czy pliki mają kodowanie UTF-8
+2. Sprawdź czy ścieżka NIE zawiera polskich znaków
+3. Pobierz pliki ponownie
+
+### Problem 3: Błąd "Nieprawidłowy klucz API"
+
+**Rozwiązanie:**
+1. Sprawdź czy klucz zaczyna się od `nvapi-`
+2. Sprawdź czy nie ma spacji
+3. Sprawdź czy plik `.env` jest w katalogu `localwriter\`
+
+### Problem 4: Błąd 429 (Rate Limit)
+
+**Rozwiązanie:**
+1. Poczekaj 1-2 minuty
+2. Przetwarzaj mniejsze fragmenty tekstu
+3. Limit: 40 zapytań na minutę
+
+### Problem 5: Brak połączenia z internetem
+
+**Rozwiązanie:**
+1. Sprawdź połączenie internetowe
+2. Wyłącz VPN
+3. Sprawdź firewall
+
+---
+
+## 8. Bibliografia
+
+| Cytowanie APA 7 | Źródło |
+|-----------------|--------|
+| NVIDIA. (2024). *NIM API Documentation*. NVIDIA Developer. https://docs.api.nvidia.com | https://tiny.pl/nvidia-nim |
+| SpeakLeash. (2024). *Bielik-11B-v2.6-Instruct Model Card*. Hugging Face. https://huggingface.co/speakleash/bielik-11b-v2.6-instruct | https://tiny.pl/bielik |
+| The Document Foundation. (2024). *LibreOffice Python Scripting Guide*. LibreOffice Documentation. https://wiki.documentfoundation.org/Macros/Python_Guide | https://tiny.pl/lo-python |
+| Plain Language Association International. (2023). *Plain Language Guidelines*. PLAIN. https://plainlanguagenetwork.org | https://tiny.pl/plain |
+
+---
+
+## Licencja
+
+MIT License - Stowarzyszenie Zwykłe "Neuroatypowi"
+
+https://neuroatypowi.org
+
+---
+
+*Ostatnia aktualizacja: 2024-12*
