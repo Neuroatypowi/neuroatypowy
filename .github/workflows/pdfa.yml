@@ -1,0 +1,98 @@
+name: Build PDF/A for Neuroatypowi
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "docs/**.md"
+      - "templates/**"
+      - "filters/**"
+      - "assets/**"
+  workflow_dispatch:
+
+jobs:
+  build-pdfa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies (TeX Live + fonts + pandoc)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-full wget unzip fonts-noto-color-emoji
+
+          mkdir -p ~/.local/share/fonts
+          cd ~/.local/share/fonts
+
+          # Inter
+          wget -q https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip -O inter.zip
+          unzip -o inter.zip
+          rm inter.zip
+
+          # OpenDyslexic (przynajmniej regular)
+          wget -q https://github.com/antijingoist/open-dyslexic/raw/master/otf/OpenDyslexic-Regular.otf -O OpenDyslexic-Regular.otf
+
+          fc-cache -fv
+
+      - name: Make output directory
+        run: mkdir -p output
+
+      - name: Build PDFs (Inter + OpenDyslexic)
+        run: |
+          for f in docs/*.md; do
+            base=$(basename "$f" .md)
+
+            # Inter
+            pandoc "$f" \
+              --from markdown \
+              --to pdf \
+              --pdf-engine=xelatex \
+              --template=templates/neuroatypowi.latex \
+              --lua-filter=filters/pdfa.lua \
+              --metadata=title="$base" \
+              --metadata=author="Neuroatypowi" \
+              --metadata=lang="pl-PL" \
+              --metadata=subject="Marek SZEWCZYK" \
+              --metadata=pdfa=true \
+              --metadata=pdfa:2b \
+              --toc \
+              --toc-depth=2 \
+              --variable=mainfont="Inter" \
+              --variable=sansfont="Inter" \
+              --variable=monofont="Inter" \
+              --variable=emoji-font="Noto Color Emoji" \
+              --variable=logo-path="assets/Neuroatypowi.200px_TXT.png" \
+              --variable=logo-width=3cm \
+              -o "output/${base}_Inter.pdf"
+
+            # OpenDyslexic
+            pandoc "$f" \
+              --from markdown \
+              --to pdf \
+              --pdf-engine=xelatex \
+              --template=templates/neuroatypowi.latex \
+              --lua-filter=filters/pdfa.lua \
+              --metadata=title="$base" \
+              --metadata=author="Neuroatypowi" \
+              --metadata=lang="pl-PL" \
+              --metadata=subject="Marek SZEWCZYK" \
+              --metadata=pdfa=true \
+              --metadata=pdfa:2b \
+              --toc \
+              --toc-depth=2 \
+              --variable=mainfont="OpenDyslexic" \
+              --variable=sansfont="Inter" \
+              --variable=monofont="Inter" \
+              --variable=emoji-font="Noto Color Emoji" \
+              --variable=logo-path="assets/Neuroatypowi.200px_TXT.png" \
+              --variable=logo-width=3cm \
+              -o "output/${base}_OpenDyslexic.pdf"
+          done
+
+      - name: Upload PDFs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdfa-neuroatypowi
+          path: output/
