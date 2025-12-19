@@ -2,5 +2,5 @@
 
 Zawiera skrypty PowerShell wspomagające automatyzację i zarządzanie projektem.
 
-*Plik wygenerowany automatycznie przez skrypt gh.ps1.*
+*Plik wygenerowany automatycznie przez workflow GitHub Actions.*
 
