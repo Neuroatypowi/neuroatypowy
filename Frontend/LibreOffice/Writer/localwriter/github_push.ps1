@@ -100,6 +100,18 @@ if (-not (Test-Path ".git")) {
     Write-Host "  Repozytorium Git istnieje" -ForegroundColor Green
 }
 
+# Czyszczenie zablokowanego rebase (jesli istnieje)
+$rebaseMergePath = Join-Path ".git" "rebase-merge"
+if (Test-Path $rebaseMergePath) {
+    Write-Host "  [UWAGA] Wykryto zablokowany rebase. Czyszczenie..." -ForegroundColor Yellow
+    try {
+        Remove-Item -Path $rebaseMergePath -Recurse -Force
+        Write-Host "  Usunieto katalog rebase-merge" -ForegroundColor Green
+    } catch {
+        Write-Host "  [BLAD] Nie mozna usunac rebase-merge: $_" -ForegroundColor Red
+    }
+}
+
 # Upewnij sie ze .gitignore istnieje
 if (-not (Test-Path ".gitignore")) {
     Write-Host "  [UWAGA] Brak pliku .gitignore!" -ForegroundColor Yellow
