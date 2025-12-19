@@ -1,15 +1,10 @@
 # Skrypt PowerShell gh.ps1
 
-# Ścieżka bazowa do katalogu projektu
 $basePath = "C:\Users\mszew\neuroatypowy"
-
-# Ścieżka do katalogu pdf w projekcie
 $pdfPath = Join-Path $basePath "pdf"
 
-# Lista katalogów do utworzenia
 $dirs = @( "docs", "assets", "filters", "templates", "tools", ".github\workflows" )
 
-# Opisy katalogów do README.md
 $descriptions = @{
     "docs" = "Zawiera pliki źródłowe w formacie Markdown, podstawowe materiały do tworzenia dokumentów."
     "assets" = "Zawiera logo i grafiki wykorzystywane w projekcie, np. do dokumentów i stron."
@@ -19,10 +14,8 @@ $descriptions = @{
     ".github\workflows" = "Zawiera definicje workflow GitHub Actions do automatyzacji CI/CD."
 }
 
-# Plik logu
 $logFile = Join-Path $basePath "gs.log"
 
-# Funkcja do logowania
 function Log-Message {
     param([string]$message)
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -34,7 +27,6 @@ function Log-Message {
 try {
     Log-Message "Start skryptu gh.ps1"
 
-    # Tworzenie katalogu pdf jeśli nie istnieje
     if (-not (Test-Path $pdfPath)) {
         New-Item -ItemType Directory -Path $pdfPath | Out-Null
         Log-Message "Utworzono katalog: $pdfPath"
@@ -42,7 +34,6 @@ try {
         Log-Message "Katalog już istnieje: $pdfPath"
     }
 
-    # Tworzenie podkatalogów i plików README.md
     foreach ($dir in $dirs) {
         $fullPath = Join-Path $pdfPath $dir
         if (-not (Test-Path $fullPath)) {
@@ -52,7 +43,6 @@ try {
             Log-Message "Katalog już istnieje: $fullPath"
         }
 
-        # Tworzenie README.md z końcami linii CRLF
         $readmePath = Join-Path $fullPath "README.md"
         $description = $descriptions[$dir]
         if (-not $description) { $description = "Opis katalogu $dir." }
@@ -66,7 +56,6 @@ try {
         )
         $contentCRLF = ($contentLines -join "`r`n") + "`r`n"
 
-        # Zapis pliku README.md
         try {
             Set-Content -Path $readmePath -Value $contentCRLF -Encoding UTF8
             Log-Message "Utworzono lub zaktualizowano plik: $readmePath"
@@ -75,7 +64,6 @@ try {
         }
     }
 
-    # Usuwanie nieaktualnego katalogu neuroatypowy
     $oldDir = Join-Path $basePath "neuroatypowy"
     if (Test-Path $oldDir) {
         try {
@@ -88,25 +76,20 @@ try {
         Log-Message "Nie znaleziono katalogu neuroatypowy do usunięcia"
     }
 
-    # Konfiguracja git i wypchnięcie zmian
-    try {
-        Set-Location $basePath
-        git config user.name "Neuroatypowi Bot"
-        git config user.email "bot@neuroatypowi.org"
+    Set-Location $basePath
+    git config user.name "Neuroatypowi Bot"
+    git config user.email "bot@neuroatypowi.org"
 
-        Log-Message "Dodawanie zmian do repozytorium Git..."
-        git add . | Out-Null
+    Log-Message "Dodawanie zmian do repozytorium Git..."
+    git add . | Out-Null
 
-        $commitMessage = "Aktualizacja struktury projektu $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
-        git commit -m "$commitMessage" | Out-Null
-        Log-Message "Commit utworzony: $commitMessage"
+    $commitMessage = "Aktualizacja struktury projektu $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+    git commit -m "$commitMessage" | Out-Null
+    Log-Message "Commit utworzony: $commitMessage"
 
-        Log-Message "Wypychanie zmian na GitHub..."
-        git push | Out-Null
-        Log-Message "Push zakończony sukcesem"
-    } catch {
-        Log-Message "Błąd podczas operacji Git: $_"
-    }
+    Log-Message "Wypychanie zmian na GitHub..."
+    git push | Out-Null
+    Log-Message "Push zakończony sukcesem"
 
     Log-Message "Skrypt zakończył działanie."
 } catch {

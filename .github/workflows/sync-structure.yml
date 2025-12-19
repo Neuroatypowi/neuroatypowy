@@ -2,8 +2,8 @@ name: Sync Local Repo Structure
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Uruchamianie co 30 minut
-  workflow_dispatch:        # Możliwość ręcznego uruchomienia
+    - cron: '*/30 * * * *'  # co 30 minut
+  workflow_dispatch:
 
 jobs:
   sync-structure:
@@ -15,6 +15,8 @@ jobs:
 
     - name: Run local structure and push script
       shell: pwsh
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $basePath = "$env:GITHUB_WORKSPACE\pdf"
 
@@ -47,12 +49,20 @@ jobs:
             default { "Opis katalogu $dir." }
           }
 
-          $content = "# $dir`n`n$description`n`n*Plik wygenerowany automatycznie przez workflow GitHub Actions.*"
-          Set-Content -Path $readmePath -Value $content -Encoding UTF8
+          $contentLines = @(
+            "# $dir",
+            "",
+            $description,
+            "",
+            "*Plik wygenerowany automatycznie przez workflow GitHub Actions.*"
+          )
+          $contentCRLF = ($contentLines -join "`r`n") + "`r`n"
+
+          Set-Content -Path $readmePath -Value $contentCRLF -Encoding UTF8
         }
 
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git commit -m "Automatyczna aktualizacja struktury katalogów i README"
+        git commit -m "Automatyczna aktualizacja struktury katalogów i README" -a || Write-Host "No changes to commit"
         git push
