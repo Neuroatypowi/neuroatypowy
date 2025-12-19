@@ -7,14 +7,7 @@ $basePath = "C:\Users\mszew\neuroatypowy"
 $pdfPath = Join-Path $basePath "pdf"
 
 # Lista katalogów do utworzenia
-$dirs = @(
-    "docs",
-    "assets",
-    "filters",
-    "templates",
-    "tools",
-    ".github\workflows"
-)
+$dirs = @( "docs", "assets", "filters", "templates", "tools", ".github\workflows" )
 
 # Opisy katalogów do README.md
 $descriptions = @{
