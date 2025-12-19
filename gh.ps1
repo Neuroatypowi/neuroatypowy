@@ -1,13 +1,41 @@
-### 6.4 Kompletny skrypt jednokomendowy
-# UWAGA: Uruchom jako Administrator
-# To nadpisze CALE zdalne repozytorium!
+$basePath = "C:\Users\mszew\neuroatypowy"
 
-cd C:\Users\mszew\neuroatypowy; `
-git init; `
-git branch -M main; `
-git remote remove origin 2>$null; `
-git remote add origin https://github.com/Neuroatypowi/neuroatypowy.git; `
-git rm --cached .env 2>$null; `
-git add --all; `
-git commit -m "POLONISTA v2.1 $(Get-Date -Format 'yyyy-MM-dd HH:mm')"; `
-git push --force origin main
+$folders = @(
+    "pdf/docs",
+    "pdf/assets",
+    "pdf/filters",
+    "pdf/templates",
+    "pdf/tools",
+    "pdf/.github/workflows"
+)
+
+foreach ($folder in $folders) {
+    $fullPath = Join-Path -Path $basePath -ChildPath $folder
+    if (-not (Test-Path -Path $fullPath)) {
+        New-Item -ItemType Directory -Path $fullPath | Out-Null
+        Write-Host "Utworzono katalog: $fullPath"
+    } else {
+        Write-Host "Katalog już istnieje: $fullPath"
+    }
+}
+
+# Usuwanie nieaktualnych katalogów
+if (Test-Path -Path "$basePath\neuroatypowy") {
+    Remove-Item -Recurse -Force "$basePath\neuroatypowy"
+    Write-Host "Usunięto nieaktualny katalog: neuroatypowy"
+} else {
+    Write-Host "Nie znaleziono katalogu neuroatypowy do usunięcia"
+}
+
+# Dodawanie wszystkich zmian do repozytorium Git
+Write-Host "Dodawanie zmian do repozytorium Git..."
+git add .
+
+# Tworzenie commita z opisem
+$commitMessage = "Aktualizacja struktury projektu $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+Write-Host "Tworzenie commita z wiadomością: $commitMessage"
+git commit -m $commitMessage
+
+# Wypychanie zmian na GitHub
+Write-Host "Wypychanie zmian na GitHub..."
+git push origin main
