@@ -1,0 +1,20 @@
+- The document refers to the Act of March 17, 1921, which is the Constitution of the Republic of Poland.
+- The source is the official website of the Sejm of the Republic of Poland (http://www.sejm.gov.pl/).
+- The website offers features such as search, contrast adjustment, and font size options (small, medium, large).
+- The document is part of the ISAP – Internetowy System Aktów Prawnych (Internet System of Legal Acts).
+- ISAP also includes legal acts and other documents of the Polish Government in Exile.
+- The navigation menu includes options for Home, Yearbooks, Keywords, Search, Help, and Contact.
+- The legal act is published in the Journal of Laws (Dziennik Ustaw) from 1921, issue number 44, position 267.
+- The title of the act is "Ustawa z dnia 17 marca 1921 r. - Konstytucja Rzeczypospolitej Polskiej."
+- The announced text is available as a PDF file named D19210267.pdf.
+- The legal status of the act is "repealed" (uchylony).
+- The date of issuance of the act is March 17, 1921.
+- The date the act came into force is June 1, 1921.
+- The date of repeal of the act is April 24, 1935.
+- The issuing authority of the act is the Sejm (the lower house of the Polish parliament).
+- There are 1109 executive acts (Akty wykonawcze) related to this constitution.
+- There are 5 amending acts (Akty zmieniające) related to this constitution.
+- There is 1 repealing act (Akty uchylające) related to this constitution.
+- The page includes a print option.
+- Copyright for the website is held by the Chancellery of the Sejm of the Republic of Poland, covering the years 2009-2025.
+- The website provides an API.

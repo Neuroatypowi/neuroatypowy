@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manifest:manifest PUBLIC "-//OpenOffice.org//DTD Manifest 1.0//EN" "Manifest.dtd">
+<manifest:manifest xmlns:manifest="urn:oasis:names:tc:opendocument:xmlns:manifest:1.0">
+    <manifest:file-entry manifest:full-path="/" manifest:media-type="application/vnd.sun.star.package-bundle"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/" manifest:media-type="application/vnd.sun.star.framework-script"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/__init__.py" manifest:media-type="text/plain"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/polonista_menu.py" manifest:media-type="application/vnd.sun.star.framework-script"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/backends/" manifest:media-type="application/vnd.sun.star.framework-script"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/backends/__init__.py" manifest:media-type="text/plain"/>
+    <manifest:file-entry manifest:full-path="AIWRITER/backends/nvidia_nim_backend.py" manifest:media-type="text/plain"/>
+    <manifest:file-entry manifest:full-path="description.xml" manifest:media-type="text/xml"/>
+</manifest:manifest>

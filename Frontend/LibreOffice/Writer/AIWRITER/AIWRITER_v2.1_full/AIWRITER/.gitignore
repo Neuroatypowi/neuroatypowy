@@ -1,0 +1,50 @@
+# =============================================================================
+# .gitignore dla projektu AIWRITER
+# =============================================================================
+# ZAPISZ: %APPDATA%/LibreOffice/4/user/Scripts/python/AIWRITER/.gitignore
+# =============================================================================
+
+# KRYTYCZNE - Klucze API (NIGDY nie wysylaj!)
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+secrets.*
+api_keys.*
+credentials.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+venv/
+.venv/
+
+# LibreOffice
+.~lock.*#
+~$*
+*.tmp
+*.bak
+*.swp
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# System
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Logs
+*.log
+logs/

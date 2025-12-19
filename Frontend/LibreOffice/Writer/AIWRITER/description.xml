@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://openoffice.org/extensions/description/2006"
+             xmlns:xlink="http://www.w3.org/1999/xlink"
+             xmlns:d="http://openoffice.org/extensions/description/2006">
+    
+    <identifier value="org.neuroatypowi.aiwriter"/>
+    
+    <version value="2.1.0"/>
+    
+    <platform value="all"/>
+    
+    <display-name>
+        <name lang="pl">AIWRITER - Framework AI dla LibreOffice Writer</name>
+        <name lang="en">AIWRITER - AI Framework for LibreOffice Writer</name>
+    </display-name>
+    
+    <extension-description>
+        <src lang="pl" xlink:href="description/description_pl.txt"/>
+        <src lang="en" xlink:href="description/description_en.txt"/>
+    </extension-description>
+    
+    <icon>
+        <default xlink:href="icons/aiwriter.png"/>
+    </icon>
+    
+    <publisher>
+        <name xlink:href="https://neuroatypowi.org" lang="pl">Stowarzyszenie Zwykle "Neuroatypowi"</name>
+        <name xlink:href="https://neuroatypowi.org" lang="en">Neuroatypowi Association</name>
+    </publisher>
+    
+    <registration>
+        <simple-license accept-by="admin" default-license-id="MIT" suppress-on-update="true">
+            <license-text xlink:href="LICENSE.txt" lang="en"/>
+        </simple-license>
+    </registration>
+    
+    <dependencies>
+        <LibreOffice-minimal-version value="24.0" d:name="LibreOffice 24.0"/>
+    </dependencies>
+    
+    <update-information>
+        <src xlink:href="https://neuroatypowi.org/aiwriter/update.xml"/>
+    </update-information>
+    
+</description>

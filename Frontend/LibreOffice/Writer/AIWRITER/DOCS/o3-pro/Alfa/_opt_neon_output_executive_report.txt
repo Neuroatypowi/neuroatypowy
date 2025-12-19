@@ -1,0 +1,73 @@
+Raport Wykonawczy - Etap: Integracja OpenAI o3-pro Batch API, Google Cloud Run i LibreOffice Writer
+
+1. Podsumowanie funkcjonalnosci
+
+System laczy LibreOffice Writer (Python 3.11.14), OpenAI o3-pro Batch API, Google Cloud Run, Firestore i Perplexity.ai. Umozliwia masowe przetwarzanie dokumentow prawnych. Dane prawne sa pobierane z Dziennika Ustaw i Monitora Polskiego. System zapewnia buforowanie i monitorowanie statusu zadan oraz automatyczne uzupelnianie danych o aktualne podstawy prawne.
+
+2. Metodologia dzialania
+
+- Uzytkownik uruchamia makro Python w LibreOffice Writer.
+- Makro wysyla dane do uslugi Google Cloud Run.
+- Cloud Run formatuje dane do JSONL i przekazuje do OpenAI Batch API.
+- Firestore przechowuje status zadan.
+- Wyniki sa odbierane i zapisywane w Google Cloud Storage.
+- Uzytkownik pobiera wyniki do dokumentu Writer.
+- Perplexity.ai uzupelnia dane o aktualne akty prawne.
+- System wymaga weryfikacji przez prawnika.
+
+3. Fragmenty kodu i ich opisy
+
+Przyklad: Wyslanie pliku do Google Cloud Run (Bash)
+
+Opis:
+Ten kod wysyla plik z danymi do uslugi Google Cloud Run przez curl.
+
+Kod:
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d @plik.json \
+  https://twoj-cloud-run-url.run.app/endpoint
+
+Przyklad: Sprawdzenie statusu zadania (Python 3.11.14)
+
+Opis:
+Ten kod sprawdza status zadania w Firestore.
+
+Kod:
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+cred = credentials.ApplicationDefault()
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+doc_ref = db.collection("batch_jobs").document("job_id")
+doc = doc_ref.get()
+if doc.exists:
+    print("Status:", doc.to_dict().get("status"))
+else:
+    print("Brak danych o zadaniu.")
+
+Przyklad: Pobranie wyniku z Google Cloud Storage (PowerShell)
+
+Opis:
+Ten kod pobiera plik wynikowy z Google Cloud Storage.
+
+Kod:
+gsutil cp gs://twoj-bucket/nazwa_pliku.json .
+
+4. Sugestie nowoczesnego projektu responsywnego
+
+- Uzyj duzych, czytelnych czcionek i kontrastowych kolorow.
+- Zapewnij mozliwosc powiekszania tekstu.
+- Stosuj proste przyciski i czytelne ikony.
+- Strona powinna dzialac na komputerach i telefonach.
+- Dodaj opisy alternatywne do grafik.
+- Zapewnij latwy dostep do najwazniejszych funkcji.
+
+5. Wizualizacje
+
+- Uzyj prostych wykresow (np. diagram przeplywu danych) pokazujacych kolejne etapy procesu.
+- Wykresy powinny byc opisane prostym jezykiem.
+- Kolory powinny byc stonowane i nie rozpraszajace.
+
+Koniec raportu.

@@ -1,0 +1,18 @@
+- The Internetowy System Aktów Prawnych (ISAP) is a legal information system edited by a team of specialists at the Information Technology Center of the Chancellery of the Sejm.
+- ISAP is part of the Sejm Information System.
+- The ISAP database contains bibliographic descriptions and texts of legal acts published based on the Act of July 20, 2000, on the promulgation of normative acts and certain other legal acts (Journal of Laws 2019, item 1461).
+- These legal acts are published in official publications: the Dziennik Ustaw and Monitor Polski, which are issued by the Government Legislation Centre.
+- Normative acts and other legal acts subject to promulgation are published in the form of an electronic document as defined by the Act of February 17, 2005, on the computerization of the activities of entities performing public tasks (Journal of Laws 2024, item 1557).
+- The Chancellery of the Sejm makes every effort to ensure that information in the ISAP database is posted promptly after publication, in a reliable and complete manner, in electronic form.
+- The Chancellery of the Sejm does not bear responsibility for the consequences of actions taken based on information published in ISAP on the Internet.
+- ISAP is not a source of law, and the electronic version of consolidated texts of statutes prepared in the Chancellery of the Sejm may only serve as informational and auxiliary material for users.
+- The system does not perform searches on request, but only provides access to the collected resources.
+- ISAP does not interpret binding regulations nor provide explanations regarding their application.
+- The ISAP database is a free system.
+- To read the content of legal acts, a PDF file viewer is required.
+- The use (including copying) of materials found in the ISAP database on the Internet is permitted, provided the source is indicated.
+- Users accessing the database for the first time are asked to carefully review the contents of the Help option.
+- The copyright for ISAP is held by the Chancellery of the Sejm of the Republic of Poland, covering the years 2009-2025.
+- The website includes options for searching, adjusting contrast, and changing font size (small, medium, large).
+- The main menu includes Home, Yearbooks, Keywords, Search, Help, and Contact.
+- There is a mention of an API.

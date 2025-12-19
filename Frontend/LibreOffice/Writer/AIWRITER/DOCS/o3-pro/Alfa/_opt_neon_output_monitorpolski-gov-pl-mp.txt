@@ -1,0 +1,29 @@
+- The homepage provides access to the Monitor Polski, which is the Official Gazette of the Republic of Poland.
+- The site includes navigation options such as "Go to content," "Monitor Polski," "Dziennik Ustaw," "Monitor Polski," "Search," "List of certificates," "Contact," "Help," and "Official Journals."
+- The logo of the Government Legislation Centre (Rządowe Centrum Legislacji, RCL) is displayed.
+- Users can navigate by year and position (Rok, Pozycja) to find specific documents.
+- There is a search function allowing users to search by title.
+- According to the Act of July 20, 2000, on the promulgation of normative acts and certain other legal acts (Journal of Laws of 2019, item 1461), the Official Gazette of the Republic of Poland "Monitor Polski" is issued by the Prime Minister with the assistance of the Government Legislation Centre.
+- Since January 1, 2012, Monitor Polski has been published in electronic form, maintaining the order of entries for each calendar year.
+- The date of promulgation of a legal act is the date it is published electronically on the website of the issuing authority.
+- The date of promulgation in electronic form is included in the header of the page.
+- The site provides a list of legal acts published in the Official Gazette of the Republic of Poland "Monitor Polski."
+- The most recently published legal acts are listed with their position number, title, date of publication, and a link to download the document in PDF format.
+- Position 1243 is "Order No. 28/2025 of the President of the National Bank of Poland of December 10, 2025, on determining the design, trial, weight, and emission volume of a 50 PLN coin from the series 'Treasures of Medallic Art' – Stanisław Konarski," published on December 11, 2025, with a downloadable document M2025000124301.pdf.
+- Position 1242 is "Resolution No. 172 of the Council of Ministers of December 9, 2025, on establishing a government program to support the county in organizing and creating family-based foster care in 2025," published on December 11, 2025, with a downloadable document M2025000124201.pdf.
+- Position 1241 is "Announcement of the Minister of Sport and Tourism of November 13, 2025, on the inclusion of the sectoral qualification 'Maintaining cleanliness in residential units using ecological solutions' in the Integrated Qualifications System," published on December 11, 2025, with a downloadable document M2025000124101.pdf.
+- Position 1240 is "Communication of the Minister of Agriculture and Rural Development of December 5, 2025, on the approval by the European Commission of the amendment to the Rural Development Program for 2014–2020," published on December 10, 2025, with a downloadable document M2025000124001.pdf.
+- Position 1239 is "Resolution No. 163 of the Council of Ministers of December 1, 2025, on establishing an investment program called 'Expansion of the Provincial Specialist Hospital of St. Jadwiga in Opole – Center for Child and Adolescent Psychiatry,'" published on December 10, 2025, with a downloadable document M2025000123901.pdf.
+- Position 1238 is "Announcement of the Minister of Infrastructure of December 4, 2025, on the amount of the fuel fee rate for 2026," published on December 8, 2025, with a downloadable document M2025000123801.pdf.
+- Position 1237 is "Announcement of the Chairman of the National Broadcasting Council of November 25, 2025, on the possibility of obtaining a license to broadcast a television program on the nationwide television multiplex MUX-8," published on December 8, 2025, with a downloadable document M2025000123701.pdf.
+- Position 1236 is "Announcement of the Minister of the Interior and Administration of November 27, 2025, on the list of local government units that joined international associations of local and regional communities from January 1, 2024, to December 31, 2024, and the list of local government units that withdrew from such associations in the same period," published on December 8, 2025, with a downloadable document M2025000123601.pdf.
+- Position 1235 is "Resolution No. 166 of the Council of Ministers of December 4, 2025, amending the resolution on the adoption of the multiannual program called National Oncology Strategy for 2020–2030," published on December 5, 2025, with a downloadable document M2025000123501.pdf.
+- Position 1234 is "Communication of the President of the National Atomic Energy Agency of December 3, 2025, on the radiological situation of the country in the third quarter of 2025," published on December 5, 2025, with a downloadable document M2025000123401.pdf.
+- There is a "See more" link for additional documents.
+- The Monitor Polski archive is available for years ranging from 2025 back to 1921, with each year listed as a clickable link.
+- For the years 1940–1945, it is noted that during this period, Monitor Polski was not published in the Polish territories.
+- The website uses cookies to facilitate the use of the service and for statistical purposes.
+- If users do not block cookies, they agree to their use and storage on their device.
+- Users can manage cookies themselves by changing their browser settings.
+- More information is available in the site's privacy policy.
+- There is an accessibility declaration for the monitorpolski.gov.pl service.

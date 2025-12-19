@@ -1,0 +1,28 @@
+- The main page of the website provides access to the Dziennik Ustaw (Journal of Laws) and Monitor Polski.
+- There are navigation options including Home, Content, Journal of Laws, Monitor Polski, Search, List of Certificates, Contact, and Help.
+- The website is managed by the Government Legislation Centre (Rządowe Centrum Legislacji, RCL).
+- Users can search for legal acts by year, position, or title.
+- According to the Act of July 20, 2000, on the promulgation of normative acts and certain other legal acts (Journal of Laws of 2019, item 1461), the Dziennik Ustaw of the Republic of Poland is issued by the Prime Minister with the assistance of the Government Legislation Centre.
+- Since January 1, 2012, the Dziennik Ustaw has been published in electronic form, maintaining the order of items within each calendar year.
+- The date of promulgation of a legal act is the date it is published electronically on the website of the issuing authority.
+- The date of promulgation in electronic form is included in the header of the page.
+- The website provides a list of legal acts published in the Dziennik Ustaw of the Republic of Poland.
+- The most recently published legal acts are listed with their position number, title, date of promulgation, and a link to download the document in PDF format.
+- Position 1763 is the Regulation of the Minister of National Defence dated December 10, 2025, regarding the list of operators of products and devices containing controlled substances or fluorinated greenhouse gases, held by organizational units of the Polish Armed Forces, published on December 11, 2025.
+- Position 1762 is the Regulation of the Prime Minister dated December 10, 2025, regarding the granting of a statute to the Central Statistical Office, published on December 11, 2025.
+- Position 1761 is the Announcement of the Minister of Finance and Economy dated November 18, 2025, regarding the publication of the uniform text of the regulation of the Minister of Finance on fees to cover the costs of supervision over the capital market, published on December 11, 2025.
+- Position 1760 is the Announcement of the Marshal of the Sejm of the Republic of Poland dated November 24, 2025, regarding the publication of the uniform text of the Act on the self-government of nurses and midwives, published on December 11, 2025.
+- Position 1759 is the Announcement of the Marshal of the Sejm of the Republic of Poland dated December 5, 2025, regarding the publication of the uniform text of the Act on the processing of criminal information, published on December 11, 2025.
+- Position 1758 is the Regulation of the Prime Minister dated December 10, 2025, amending the regulation on the service ID of officers of the Central Anti-Corruption Bureau, published on December 11, 2025.
+- Position 1757 is the Regulation of the Minister of Education dated December 1, 2025, regarding the Sectoral Qualifications Framework in the energy sector, published on December 11, 2025.
+- Position 1756 is the Announcement of the Marshal of the Sejm of the Republic of Poland dated December 5, 2025, regarding the publication of the uniform text of the Act on the manufacture of spirit beverages, published on December 10, 2025.
+- Position 1755 is the Regulation of the Minister of Health dated December 9, 2025, amending the regulation on the pilot program for coordinated medical care for patients with neurofibromatoses and related rasopathies, published on December 10, 2025.
+- Position 1754 is the Announcement of the Marshal of the Sejm of the Republic of Poland dated November 20, 2025, regarding the publication of the uniform text of the Act on facilitating the preparation and implementation of housing investments and accompanying investments, published on December 10, 2025.
+- There is a "See more" option to view additional legal acts.
+- The archive of the Dziennik Ustaw is available for years ranging from 2025 back to 1918, with each year listed as a clickable link.
+- For the years 1940, 1941, 1942, and 1943, there is a note indicating that during this time, the Dziennik Ustaw was not published in the territory of Polish lands.
+- The website uses cookies to facilitate the use of the service and for statistical purposes.
+- If users do not block cookies, they agree to their use and storage on their device.
+- Users can manage cookies themselves by changing their browser settings.
+- More information about cookies is available in the website's privacy policy.
+- There is a declaration of accessibility for the dziennikustaw.gov.pl service.
