@@ -1,116 +1,16 @@
-2025-12-19 19:29:39 - Start skryptu gh.ps1
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 19:29:39 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 19:29:39 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 19:29:39 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 19:29:39 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 19:29:39 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 19:29:39 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 19:29:40 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 19:29:40 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 19:29:40 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 19:29:40 - Dodawanie zmian do repozytorium Git...
-2025-12-19 19:29:40 - Commit utworzony: Aktualizacja struktury projektu 2025-12-19 19:29
-2025-12-19 19:29:40 - Wypychanie zmian na GitHub...
-2025-12-19 19:29:40 - Push zakończony sukcesem
-2025-12-19 19:29:40 - Skrypt zakończył działanie.
-2025-12-19 19:31:25 - Start skryptu gh.ps1
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 19:31:25 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 19:31:25 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 19:31:25 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 19:31:26 - Dodawanie zmian do repozytorium Git...
-2025-12-19 19:31:26 - Commit utworzony: Aktualizacja struktury projektu 2025-12-19 19:31
-2025-12-19 19:31:26 - Wypychanie zmian na GitHub...
-2025-12-19 19:31:29 - Push zakończony sukcesem
-2025-12-19 19:31:30 - Skrypt zakończył działanie.
-2025-12-19 19:40:26 - Start skryptu gh.ps1
-2025-12-19 19:40:26 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 19:40:27 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 19:40:27 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 19:40:27 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 19:40:27 - Dodawanie zmian do repozytorium Git...
-2025-12-19 19:40:28 - Commit utworzony: Aktualizacja struktury projektu 2025-12-19 19:40
-2025-12-19 19:40:28 - Wypychanie zmian na GitHub...
-2025-12-19 19:40:31 - Push zakończony sukcesem
-2025-12-19 19:40:31 - Skrypt zakończył działanie.
-2025-12-19 19:53:43 - Start skryptu gh.ps1
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 19:53:43 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 19:53:43 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 19:53:43 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 19:53:44 - Dodawanie zmian do repozytorium Git...
-2025-12-19 19:53:44 - Commit utworzony: Aktualizacja struktury projektu 2025-12-19 19:53
-2025-12-19 19:53:44 - Wypychanie zmian na GitHub...
-2025-12-19 19:53:47 - Push zakończony sukcesem
-2025-12-19 19:53:47 - Skrypt zakończył działanie.
-2025-12-19 20:14:00 - Start skryptu gh.ps1
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 20:14:00 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 20:14:00 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 20:14:00 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 20:14:00 - Dodawanie zmian do repozytorium Git...
-2025-12-19 20:14:01 - Commit utworzony: Aktualizacja struktury projektu 2025-12-19 20:14
-2025-12-19 20:14:01 - Wypychanie zmian na GitHub...
-2025-12-19 20:14:04 - Push zakończony sukcesem
-2025-12-19 20:14:04 - Skrypt zakończył działanie.
-2025-12-19 20:14:17 - Start skryptu gh.ps1
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
-2025-12-19 20:14:17 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
-2025-12-19 20:14:17 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
-2025-12-19 20:14:17 - Nie znaleziono katalogu neuroatypowy do usunięcia
-2025-12-19 20:14:17 - Dodawanie zmian do repozytorium Git...
+2025-12-19 20:18:59 - Start skryptu gh.ps1
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\docs
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\docs\README.md
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\assets
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\assets\README.md
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\filters
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\filters\README.md
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\templates
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\templates\README.md
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\tools
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\tools\README.md
+2025-12-19 20:18:59 - Katalog już istnieje: C:\Users\mszew\neuroatypowy\pdf\.github\workflows
+2025-12-19 20:18:59 - Utworzono lub zaktualizowano plik: C:\Users\mszew\neuroatypowy\pdf\.github\workflows\README.md
+2025-12-19 20:18:59 - Nie znaleziono katalogu neuroatypowy do usunięcia
+2025-12-19 20:18:59 - Dodawanie zmian do repozytorium Git...

@@ -59,16 +59,23 @@ try {
             Log-Message "Katalog już istnieje: $fullPath"
         }
 
-        # Tworzenie README.md
+        # Tworzenie README.md z końcami linii CRLF
         $readmePath = Join-Path $fullPath "README.md"
         $description = $descriptions[$dir]
         if (-not $description) { $description = "Opis katalogu $dir." }
 
-        $content = "# $dir`n`n$description`n`n*Plik wygenerowany automatycznie przez skrypt gh.ps1.*"
+        $contentLines = @(
+            "# $dir",
+            "",
+            $description,
+            "",
+            "*Plik wygenerowany automatycznie przez skrypt gh.ps1.*"
+        )
+        $contentCRLF = ($contentLines -join "`r`n") + "`r`n"
 
         # Zapis pliku README.md
         try {
-            Set-Content -Path $readmePath -Value $content -Encoding UTF8
+            Set-Content -Path $readmePath -Value $contentCRLF -Encoding UTF8
             Log-Message "Utworzono lub zaktualizowano plik: $readmePath"
         } catch {
             Log-Message "Błąd zapisu pliku README.md: $readmePath - $_"
