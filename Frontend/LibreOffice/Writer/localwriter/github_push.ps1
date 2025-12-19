@@ -100,15 +100,15 @@ if (-not (Test-Path ".git")) {
     Write-Host "  Repozytorium Git istnieje" -ForegroundColor Green
 }
 
-# Czyszczenie zablokowanego rebase (jesli istnieje)
+# Czyszczenie zablokowanego rebase (jeśli istnieje)
 $rebaseMergePath = Join-Path ".git" "rebase-merge"
 if (Test-Path $rebaseMergePath) {
     Write-Host "  [UWAGA] Wykryto zablokowany rebase. Czyszczenie..." -ForegroundColor Yellow
     try {
         Remove-Item -Path $rebaseMergePath -Recurse -Force
-        Write-Host "  Usunieto katalog rebase-merge" -ForegroundColor Green
+        Write-Host "  Usunięto katalog rebase-merge" -ForegroundColor Green
     } catch {
-        Write-Host "  [BLAD] Nie mozna usunac rebase-merge: $_" -ForegroundColor Red
+        Write-Host "  [BŁĄD] Nie można usunąć rebase-merge: $_" -ForegroundColor Red
     }
 }
 
