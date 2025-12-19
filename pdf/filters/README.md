@@ -1,6 +1,5 @@
 # filters
 
-Zawiera filtry Lua używane przez Pandoc do przetwarzania dokumentów.
+Filtry Lua dla Pandoc.
 
-*Plik wygenerowany automatycznie przez skrypt gh.ps1.*
-
+*Plik wygenerowany automatycznie przez gh.ps1.*

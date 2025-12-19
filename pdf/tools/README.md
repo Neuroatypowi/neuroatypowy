@@ -1,6 +1,5 @@
 # tools
 
-Zawiera skrypty PowerShell wspomagające automatyzację i zarządzanie projektem.
+Skrypty PowerShell.
 
-*Plik wygenerowany automatycznie przez skrypt gh.ps1.*
-
+*Plik wygenerowany automatycznie przez gh.ps1.*

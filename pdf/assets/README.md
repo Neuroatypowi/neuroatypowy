@@ -1,6 +1,5 @@
 # assets
 
-Zawiera logo i grafiki wykorzystywane w projekcie, np. do dokumentów i stron.
+Zawiera logo i grafiki.
 
-*Plik wygenerowany automatycznie przez skrypt gh.ps1.*
-
+*Plik wygenerowany automatycznie przez gh.ps1.*

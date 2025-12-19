@@ -11,7 +11,6 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# === Ścieżki względem katalogu skryptu ===
 $Root        = Split-Path -Parent $PSScriptRoot
 $FiltersDir  = Join-Path $Root "filters"
 $TemplatesDir= Join-Path $Root "templates"
@@ -33,18 +32,15 @@ Assert-FileExists $Template
 Assert-FileExists $LogoPath
 Assert-FileExists $InputFile
 
-# === Wykrywanie emoji w Markdown ===
 function Test-ContainsEmoji {
     param([string]$Path)
-
     $content = Get-Content -LiteralPath $Path -Raw
-
     foreach ($ch in $content.ToCharArray()) {
         $code = [int][char]$ch
         if (
-            ($code -ge 0x1F300 -and $code -le 0x1FAFF) -or  # emoji
-            ($code -ge 0x2600  -and $code -le 0x27BF)  -or  # symbole
-            ($code -ge 0xFE00  -and $code -le 0xFE0F)       # warianty
+            ($code -ge 0x1F300 -and $code -le 0x1FAFF) -or
+            ($code -ge 0x2600  -and $code -le 0x27BF)  -or
+            ($code -ge 0xFE00  -and $code -le 0xFE0F)
         ) {
             return $true
         }
@@ -55,15 +51,12 @@ function Test-ContainsEmoji {
 $HasEmoji = Test-ContainsEmoji -Path $InputFile
 Write-Host "Wykryto emoji: $HasEmoji"
 
-# === Sprawdzanie fontów w Windows ===
 function Test-FontInstalled {
     param([string]$FontName)
-
     $paths = @(
         "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts",
         "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\Fonts"
     )
-
     foreach ($path in $paths) {
         if (Test-Path $path) {
             $values = Get-ItemProperty -Path $path
@@ -76,7 +69,6 @@ function Test-FontInstalled {
             }
         }
     }
-
     return $false
 }
 
@@ -89,7 +81,6 @@ foreach ($f in $RequiredFonts) {
     }
 }
 
-# === Budowanie listy zmiennych Pandoc/LaTeX ===
 function Get-PandocVariables {
     param(
         [string]$MainFont,
@@ -97,7 +88,6 @@ function Get-PandocVariables {
         [string]$MonoFont,
         [bool]$IncludeEmoji
     )
-
     $vars = @(
         "--variable=mainfont=$MainFont",
         "--variable=sansfont=$SansFont",
@@ -107,15 +97,12 @@ function Get-PandocVariables {
         "--variable=logo-path=$LogoPath",
         "--variable=logo-width=3cm"
     )
-
     if ($IncludeEmoji) {
         $vars += "--variable=emoji-font=Noto Color Emoji"
     }
-
     return $vars
 }
 
-# === Wywołanie Pandoc dla danego profilu typograficznego ===
 function Invoke-MdToPdfProfile {
     param(
         [string]$ProfileName,
@@ -166,21 +153,25 @@ Write-Host "Wygenerowano:"
 Write-Host " - $OutInter"
 Write-Host " - $OutOpenD"
 
-# === Opcjonalne podpisywanie – hook, szczegóły w sekcji 5 ===
+function Get-CertificateByThumbprint {
+    param(
+        [string]$Thumbprint
+    )
+    $store = New-Object System.Security.Cryptography.X509Certificates.X509Store("My","CurrentUser")
+    $store.Open("ReadOnly")
+    $cert = $store.Certificates | Where-Object { $_.Thumbprint -eq $Thumbprint }
+    $store.Close()
+    if (-not $cert) {
+        throw "Nie znaleziono certyfikatu o Thumbprint: $Thumbprint w CurrentUser\My."
+    }
+    return $cert
+}
+
 function Sign-PdfWithSmime {
     param(
         [string]$PdfPath,
         [string]$CertThumbprint
     )
-    <#
-      Placeholder:
-      - wyszukaj certyfikat w CurrentUser\My po thumbprincie,
-      - wyeksportuj do PFX (lub użyj bezpośrednio, jeśli wybrane narzędzie CLI wspiera),
-      - wywołaj narzędzie CLI podpisujące PDF (np. poprzez Java/iText lub inne).
-    #>
-    Write-Warning "Podpisywanie PDF nie jest jeszcze skonfigurowane. Uzupełnij funkcję Sign-PdfWithSmime."
+    $cert = Get-CertificateByThumbprint -Thumbprint $CertThumbprint
+    Write-Warning "Hook do podpisu PDF jest przygotowany. Uzupełnij wywołanie narzędzia CLI w funkcji Sign-PdfWithSmime."
 }
-
-# Przykład użycia po skonfigurowaniu:
-# Sign-PdfWithSmime -PdfPath $OutInter -CertThumbprint "<THUMBPRINT>"
-# Sign-PdfWithSmime -PdfPath $OutOpenD -CertThumbprint "<THUMBPRINT>"

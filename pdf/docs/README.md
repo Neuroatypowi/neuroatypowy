@@ -1,6 +1,5 @@
 # docs
 
-Zawiera pliki źródłowe w formacie Markdown, podstawowe materiały do tworzenia dokumentów.
+Zawiera pliki źródłowe Markdown.
 
-*Plik wygenerowany automatycznie przez skrypt gh.ps1.*
-
+*Plik wygenerowany automatycznie przez gh.ps1.*
