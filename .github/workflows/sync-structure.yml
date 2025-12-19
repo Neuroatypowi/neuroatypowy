@@ -1,0 +1,61 @@
+name: Sync Local Repo Structure
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Uruchamianie co 30 minut
+  workflow_dispatch:        # Możliwość ręcznego uruchomienia
+
+jobs:
+  sync-structure:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup PowerShell
+      uses: actions/setup-powershell@v2
+
+    - name: Run local structure and push script
+      shell: pwsh
+      run: |
+        $basePath = "$env:GITHUB_WORKSPACE\pdf"
+
+        $dirs = @(
+          "docs",
+          "assets",
+          "filters",
+          "templates",
+          "tools",
+          ".github\workflows"
+        )
+
+        foreach ($dir in $dirs) {
+          $fullPath = Join-Path $basePath $dir
+          if (-not (Test-Path $fullPath)) {
+            New-Item -ItemType Directory -Path $fullPath | Out-Null
+            Write-Host "Created directory: $fullPath"
+          } else {
+            Write-Host "Directory already exists: $fullPath"
+          }
+
+          $readmePath = Join-Path $fullPath "README.md"
+          $description = switch ($dir) {
+            "docs" { "Zawiera pliki źródłowe w formacie Markdown, podstawowe materiały do tworzenia dokumentów." }
+            "assets" { "Zawiera logo i grafiki wykorzystywane w projekcie, np. do dokumentów i stron." }
+            "filters" { "Zawiera filtry Lua używane przez Pandoc do przetwarzania dokumentów." }
+            "templates" { "Zawiera szablony LaTeX do generowania dokumentów PDF/A z zachowaniem stylów Neuroatypowi." }
+            "tools" { "Zawiera skrypty PowerShell wspomagające automatyzację i zarządzanie projektem." }
+            ".github\workflows" { "Zawiera definicje workflow GitHub Actions do automatyzacji CI/CD." }
+            default { "Opis katalogu $dir." }
+          }
+
+          $content = "# $dir`n`n$description`n`n*Plik wygenerowany automatycznie przez workflow GitHub Actions.*"
+          Set-Content -Path $readmePath -Value $content -Encoding UTF8
+        }
+
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Automatyczna aktualizacja struktury katalogów i README"
+        git push
