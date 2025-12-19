@@ -14,7 +14,7 @@ $descriptions = @{
     ".github\workflows" = "Zawiera definicje workflow GitHub Actions do automatyzacji CI/CD."
 }
 
-$logFile = Join-Path $basePath "gs.log"
+$logFile = Join-Path $basePath "ghlog.txt"
 
 function Log-Message {
     param([string]$message)
