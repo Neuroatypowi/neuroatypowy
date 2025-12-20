@@ -1,3 +1,5 @@
 2025-12-20 06:10:41 - Reset repo zakończony
 2025-12-20 06:10:41 - Aktualna gałąź: main
 2025-12-20 06:10:41 - Wykryto lokalne zmiany — commituję
+2025-12-20 06:10:43 - Ponawiam git pull --rebase origin main
+2025-12-20 06:10:43 - Nieoczekiwany błąd: git pull --rebase nadal się nie powiódł — sprawdź git-errors.log
