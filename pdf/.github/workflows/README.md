@@ -1,5 +1,6 @@
 # .github\workflows
 
-Workflow GitHub Actions.
+Zawiera definicje workflow GitHub Actions do automatyzacji CI/CD.
 
-*Plik wygenerowany automatycznie przez gh.ps1.*
+*Plik wygenerowany automatycznie przez workflow GitHub Actions.*
+

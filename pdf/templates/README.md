@@ -1,5 +1,6 @@
 # templates
 
-Szablony LaTeX dla PDF/A.
+Zawiera szablony LaTeX do generowania dokumentów PDF/A z zachowaniem stylów Neuroatypowi.
 
-*Plik wygenerowany automatycznie przez gh.ps1.*
+*Plik wygenerowany automatycznie przez workflow GitHub Actions.*
+

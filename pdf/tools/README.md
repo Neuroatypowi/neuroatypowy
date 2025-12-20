@@ -1,5 +1,6 @@
 # tools
 
-Skrypty PowerShell.
+Zawiera skrypty PowerShell wspomagające automatyzację i zarządzanie projektem.
 
-*Plik wygenerowany automatycznie przez gh.ps1.*
+*Plik wygenerowany automatycznie przez workflow GitHub Actions.*
+

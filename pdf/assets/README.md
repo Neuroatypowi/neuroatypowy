@@ -1,5 +1,6 @@
 # assets
 
-Zawiera logo i grafiki.
+Zawiera logo i grafiki wykorzystywane w projekcie, np. do dokumentów i stron.
 
-*Plik wygenerowany automatycznie przez gh.ps1.*
+*Plik wygenerowany automatycznie przez workflow GitHub Actions.*
+
