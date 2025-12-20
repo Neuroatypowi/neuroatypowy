@@ -1,2 +1,5 @@
 pdf/assets/fonts/gs.log
 git-errors.log
+gs.log
+*.pdf
+pdf/tools/
