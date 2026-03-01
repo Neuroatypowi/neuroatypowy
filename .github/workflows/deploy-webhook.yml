@@ -3,12 +3,12 @@ name: Deploy Webhook Receiver to Cloud Run
 on:
   push:
     branches:
-      - main  # Uruchamia się, gdy wypychasz kod do gałęzi main
+      - main
     paths:
-      - 'Backend/GCP/webhook-receiver/**' # Uruchamia się tylko, gdy zmienisz coś w tym folderze
-workflow_dispatch:
-jobs:
-  deploy:
+      - 'Backend/GCP/webhook-receiver/**'
+  workflow_dispatch:  
+
+jobs:  deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
