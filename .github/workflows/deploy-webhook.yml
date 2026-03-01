@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
-      id-token: 'write' # Kluczowe dla Workload Identity Federation
+      id-token: 'write'
 
     steps:
       - name: Checkout code
@@ -23,7 +23,6 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          # Format: projects/NUMER_PROJEKTU/locations/global/workloadIdentityPools/NAZWA_PULI/providers/NAZWA_PROVIDERA
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
