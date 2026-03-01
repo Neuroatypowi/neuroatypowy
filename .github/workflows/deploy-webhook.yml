@@ -6,7 +6,7 @@ on:
       - main  # Uruchamia się, gdy wypychasz kod do gałęzi main
     paths:
       - 'Backend/GCP/webhook-receiver/**' # Uruchamia się tylko, gdy zmienisz coś w tym folderze
-
+workflow_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
