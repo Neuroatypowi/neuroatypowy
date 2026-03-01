@@ -1,0 +1,43 @@
+name: Deploy Webhook Receiver to Cloud Run
+
+on:
+  push:
+    branches:
+      - main  # Uruchamia się, gdy wypychasz kod do gałęzi main
+    paths:
+      - 'Backend/GCP/webhook-receiver/**' # Uruchamia się tylko, gdy zmienisz coś w tym folderze
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Wymagane do uwierzytelnienia przez Workload Identity Federation
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Logowanie do Google Cloud przy użyciu WIF (Bez kluczy JSON!)
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      # Konfiguracja gcloud CLI
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+
+      # Wdrożenie do Cloud Run
+      - name: 'Deploy to Cloud Run'
+        working-directory: Backend/GCP/webhook-receiver
+        run: |
+          gcloud run deploy webhook-receiver \
+            --source . \
+            --region europe-west1 \
+            --allow-unauthenticated \
+            --quiet
