@@ -1,0 +1,9 @@
+.git
+.github
+.gitignore
+node_modules/
+*.log
+README.md
+src/server.debug.js
+src/server.production.js
+Dockerfile
