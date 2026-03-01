@@ -1,0 +1,11 @@
+# Force Unix LF line endings for Node.js and Docker configuration files
+# Target environment: Google Cloud Run Debian Linux
+# Date: 2026-03-01
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+Dockerfile text eol=lf
+.dockerignore text eol=lf
+.gcloudignore text eol=lf

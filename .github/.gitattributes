@@ -1,0 +1,6 @@
+# Force Unix LF line endings for GitHub Actions workflow files
+# Target environment: GitHub Ubuntu runners
+# Date: 2026-03-01
+
+*.yml text eol=lf
+*.yaml text eol=lf
