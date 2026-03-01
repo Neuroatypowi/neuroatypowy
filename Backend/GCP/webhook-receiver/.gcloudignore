@@ -3,5 +3,5 @@
 node_modules/
 *.log
 README.md
-server.debug.js
-server.production.js
+src/server.debug.js
+src/server.production.js
