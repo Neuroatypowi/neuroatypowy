@@ -1,4 +1,4 @@
-# 🤖 MailerSend Webhook Receiver — Neuroatypowi.org
+# 🤖 MailerSend Webhook Receiver — Neuroatypowi.org (DEV)
 
 > **Streszczenie:** System odbiera powiadomienia e-mail i zapisuje je bezpiecznie w chmurze Google. Działa szybko i za darmo.
 
