@@ -6,33 +6,32 @@ on:
       - main
     paths:
       - 'Backend/GCP/webhook-receiver/**'
-  workflow_dispatch:  
+  workflow_dispatch:
 
-jobs:  deploy:
+jobs:
+  deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
-      id-token: 'write' # Wymagane do uwierzytelnienia przez Workload Identity Federation
+      id-token: 'write' # Kluczowe dla Workload Identity Federation
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Logowanie do Google Cloud przy użyciu WIF (Bez kluczy JSON!)
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
+          # Format: projects/NUMER_PROJEKTU/locations/global/workloadIdentityPools/NAZWA_PULI/providers/NAZWA_PROVIDERA
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      # Konfiguracja gcloud CLI
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
         with:
           project_id: ${{ vars.GCP_PROJECT_ID }}
 
-      # Wdrożenie do Cloud Run
       - name: 'Deploy to Cloud Run'
         working-directory: Backend/GCP/webhook-receiver
         run: |
