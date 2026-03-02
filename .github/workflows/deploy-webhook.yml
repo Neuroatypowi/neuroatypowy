@@ -1,56 +1,84 @@
-name: Wdrożenie Skalowalnej Usługi Webhook Receiver
+# ==============================================================================
+# PROCES BUDOWANIA I WDRAZANIA ARCHITEKTURY CLOUD RUN V2 - NEUROATYPOWY
+# Data aktualizacji: 02.03.2026 r.
+# Region docelowy: europe-west1 (Belgium)
+# Standard: ASCII, LF, No Hidden Chars, Separation of Logic and Comments
+# ==============================================================================
 
-# Precyzyjne zdefiniowanie zdarzeń wektorowych uruchamiających asynchroniczny potok roboczy CI/CD na podstawie zmian rewizyjnych w obrębie zadeklarowanego ścisłego katalogu plików repozytorium platformy. Zoptymalizowano użycie nadmiarowych minut rozliczeniowych.
+name: Deploy Webhook to Cloud Run
+
 on:
   push:
     branches:
       - main
     paths:
-      - 'src/**'
+      - 'Backend/**'
       - '.github/workflows/deploy-webhook.yml'
-  workflow_dispatch:
 
-# Dynamiczna konfiguracja przestrzeni hermetycznych zmiennych środowiskowych ułatwiająca zunifikowane zarzadzanie dystrybucją zasobów poleceń i pozbycie się na stałe "zahardcodowanych" w procesie danych.
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
   SERVICE_NAME: webhook-receiver
-  REGION: europe-west1 # Deklaratywne nakazanie zlokalizowania klastra rozliczeniowego usługi do przestrzeni europejskiej. Redukcja asynchronicznych opóźnień w węzłach.
-  # Konstrukcja wyprzedzająca wdrożeniowa gotowa na aplikowanie w obwodzie potężnej nowej architektury OIDC bez potrzeby wielokrotnego łamania i parsowania struktur pliku w momencie adaptacji WIF z usunięciem kont JSON:
-  # WIF_PROVIDER: 'projects/123456789/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-  # WIF_SERVICE_ACCOUNT: 'github-actions-deploy@projekt.iam.gserviceaccount.com'
+  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/webhook-receiver
 
 jobs:
   deploy:
-    name: Proces Budowania i Wdrażania Architektury Zmian Aplikacji do Zarządzanego Obszaru Google Cloud Run v2 Platform
+    name: Build and Deploy to Google Cloud
     runs-on: ubuntu-latest
-
-    # Dogłębnie i precyzyjnie ustanowiona nowa rozległa konfiguracja struktury oraz pełna definicja wymaganego zakresu zintegrowanych wewnętrznie z procesami maszyn przywilejów dostępu platformy i obwodów uwierzytelniania u chmurowego dostawcy instancji; zablokowanie podkatalogów i uruchomienie, całkowicie niezwykle krytyczna flaga dla podłączenia pod mechanizm wysoce ulotnych tokenów uwierzytelnień struktury wymiany relacyjnej OIDC w zaimplementowaniu w pełni najnowocześniejszych na ten rok konwencji standardu środowisk polityk zero trust na obszarach potoków.
+    
+    # Wymagane uprawnienia dla OIDC / Workload Identity Federation
     permissions:
-      contents: read
-      id-token: write 
+      contents: 'read'
+      id-token: 'write'
 
     steps:
-      # Optymalny i stabilny moduł realizacyjny wykonania operacji przypisany w ścieżce za pełne wykonanie podjęcia przez środowisko maszyn zadania odpowiedzialnego w rygorze asynchronicznego sklonowania w pełni struktur paczek za udane inicjalizacje i powołania pobierania plików drzewa roboczego struktury z pominięciem blokady pobierania w oparciu o rewizje SHA i dezaktywacji czyszczeń
-      - name: Inicjalizacja i Precyzyjne Przygotowanie Środowiska Repozytorium Kodu dla Pobrania Wersji Bazowej Wykonań Kodów Rewizyjnych (Checkout z odblokowaniem ścieżek)
+      # 1. Pobranie kodu z repozytorium
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Zmodernizowana logistyka algorytmów realizująca poświadczenia i nawiązująca pełne relacyjne poświadczenie platform autoryzacyjna (Z precyzją nakierowaną na absolutne zachowanie chwilowo wymaganej spójności operacyjnej i kompatybilności wstecz dla powiązanej i przypiętej w przestrzeni instancji platform z dzisiejszą bazową konstrukcją pliku i obwodu potoku w celu uniknięcia drastycznego zaprzestania działania zablokowanych autoryzacji i implementacji klucza plikowego standardu kodowania kluczy w zrzuconym archiwum JSON wywołania podrzędnego błędu pobierania po usunięciu uprawnień z kluczy ról developerskich. Stanowcza inżynierska wielka rekomendacja ustrukturyzowana na uaktualniony rok wdrażania procedur od 2026 r: rygorystyczne usunięcie deklaracji bloków konfiguracji zmiennej ukrytej struktury `credentials_json` i płynna integracja systemu i zmiana kluczy do podłączeń na dynamiczne pobranie danych dla flag środowiska przyporządkowanych na rzecz dynamicznej strukturalizacji odnawialnej konfiguracji obwodu i implementacja wektorowa zmiennych konfiguracyjnych w wywołaniach potoku dla wektora tożsamości z parametrem instalacji komendy oznaczającej flagi odwołania `workload_identity_provider`)
-      - name: Kompleksowe Wdrożenie Systemów Uwierzytelnienia Dostępowych do Klastrów Maszyn Podmiotu Obliczeniowego i Operacyjnego Dystrybucji Usług Sieci Platformy Systemów Instancji Google Cloud na Rzecz Potoku Repozytoryjnego Środowisk Zintegrowanych i Rozliczeniowych (Auth Process Check)
+      # 2. Autoryzacja w Google Cloud za pomoca OIDC (Zalecane zamiast Service Account Key)
+      # Wymaga ustawienia sekretow: GCP_WORKLOAD_IDENTITY_PROVIDER oraz GCP_SERVICE_ACCOUNT
+      - name: Google Auth
+        id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          token_format: 'access_token'
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      # Mechanizm i instrukcja obsługująca potok pobierająca najnowsze pliki instalacyjne poleceń obsługujących system pobierająca moduły systemów oraz rozszerzeń narzędzi skompresowanych pobrania rozszerzeń narzędzi konfiguracyjnych przygotowanie do akcji w warstwach maszyny instancji instalacyjnych narzędzi zestawień środowiska skompresowanej maszyny poleceń archiwum systemu pakietów SDK środowiska binarnego systemu pobierania gcloud interfejsu wiersza CLI do zarządzania infrastrukturą chmurową poleceń.
-      - name: Weryfikacja Konfiguracji Instalacyjnej Przebiegu Algorytmów Inicjalizacji Poświadczenia Podstawy Środowiska Komend Skryptowych Google Cloud Platform Interfejsów Linii Konwersji Narzędzi Operacyjnych Wykonawczego Narzędzia Maszyn Wirtualnych Środowisk Binarnego Systemu CLI (Setup Initialization Architecture)
+      # 3. Konfiguracja narzedzia gcloud
+      - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
 
-      # Autorski, w stu procentach zweryfikowany inżynieryjnie na środowiskach wieloplatformowych i wysoce zabezpieczony oraz zabezpieczony na nowo i chroniący całą rozległą przestrzeń konstrukcji strukturalnych plików konfiguracyjnych potoków instrukcyjnych, wdrożeniowy wektor komend interfejsu CLI maszyny z zastosowaniem wielowymiarowego systemu składni zaginanego elementu formatowania znaków bloku zapobiegającego błędnym poleceniom rozbudowany i w pełni zaimplementowany mechanizm wdrożenia aplikacji bazowy i fundamentalnie omijający podstępne wady leksykalne wprowadzania pustych białych niewidocznych spacji we fragmentach parsera pliku oraz niwelujące zaistniałe anomalie i defekty dekodowania znaków standardu zapisu Unicode generowanych układem systemowych klawiatur po użyciu klawiszy funkcyjnych
-      - name: Realizacja Asynchronicznego Wdrażania Wygenerowanego Środowiskowego Narzędzia Budowy i Zoptymalizowane i Zabezpieczone Konstrukcyjne Automatyczne Wielowymiarowe Architektury Obrazowania Do Narzędzi Zintegrowanego Standardu Reagującego Systemu Wdrożeniowego Usług Klasy Chmurowej Cloud Run
-        run: >
-          gcloud run deploy ${{ env.SERVICE_NAME }}
-          --source.
-          --region ${{ env.REGION }}
-          --project ${{ env.PROJECT_ID }}
-          --platform managed
-          --allow-unauthenticated
-          --quiet
+      # 4. Autoryzacja Docker do Artifact Registry / GCR
+      - name: Docker Auth
+        run: |-
+          gcloud auth configure-docker --quiet
+
+      # 5. Budowanie obrazu kontenera
+      # Sciezka kontekstu: Backend/GCP/webhook-receiver
+      - name: Build Docker Image
+        run: |-
+          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} ./Backend/GCP/webhook-receiver
+
+      # 6. Wyslanie obrazu do rejestru
+      - name: Push Docker Image
+        run: |-
+          docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      # 7. Wdrozenie do Cloud Run v2
+      # Zastosowanie flagi --region europe-west1 zgodnie z wymogiem
+      - name: Deploy to Cloud Run v2
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          flags: '--allow-unauthenticated'
+
+      # 8. Wyswietlenie adresu URL uslugi
+      - name: Show Service URL
+        run: |-
+          echo "Service is deployed at: ${{ steps.deploy.outputs.url }}"
