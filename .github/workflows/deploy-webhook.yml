@@ -6,13 +6,14 @@ on:
       - main
     paths:
       - 'Backend/GCP/webhook-receiver/**'
-  workflow_dispatch: # Dokładnie 2 spacje wcięcia od lewej
+  workflow_dispatch: # Wyzwalacz ręczny
 
 jobs:
   deploy:
     name: 'Build and Deploy to Cloud Run'
     runs-on: ubuntu-latest
     
+    # Krytyczne uprawnienia dla WIF
     permissions:
       contents: 'read'
       id-token: 'write' 
