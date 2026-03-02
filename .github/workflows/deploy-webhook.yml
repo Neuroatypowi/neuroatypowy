@@ -6,14 +6,13 @@ on:
       - main
     paths:
       - 'Backend/GCP/webhook-receiver/**'
-  workflow_dispatch: # Poprawione wcięcie - teraz pod sekcją 'on'
+  workflow_dispatch: # Dokładnie 2 spacje wcięcia od lewej
 
 jobs:
   deploy:
     name: 'Build and Deploy to Cloud Run'
     runs-on: ubuntu-latest
     
-    # Krytyczne uprawnienia dla WIF
     permissions:
       contents: 'read'
       id-token: 'write' 
@@ -26,7 +25,6 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          # Ta linia odwołuje się do Secretu z punktu 2
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
