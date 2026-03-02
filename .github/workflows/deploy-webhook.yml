@@ -1,8 +1,8 @@
 # ==============================================================================
-# PROCES BUDOWANIA I WDRAZANIA ARCHITEKTURY CLOUD RUN V2 - NEUROATYPOWY
-# Data aktualizacji: 02.03.2026 r.
-# Region docelowy: europe-west1 (Belgium)
-# Standard: ASCII, LF, No Hidden Chars, Separation of Logic and Comments
+# PROCES BUDOWANIA I WDRAZANIA ARCHITEKTURY - NEUROATYPOWY
+# Cel: Cloud Run v2 w regionie europe-west1 (Belgia)
+# Standard: 100% ASCII, LF, Rozdzial logiki od komentarzy
+# Stan na dzien: 02.03.2026 r.
 # ==============================================================================
 
 name: Deploy Webhook to Cloud Run
@@ -12,73 +12,68 @@ on:
     branches:
       - main
     paths:
-      - 'Backend/**'
+      - 'Backend/GCP/webhook-receiver/**'
       - '.github/workflows/deploy-webhook.yml'
 
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  # Bezwzglednie wymagany Region Google Cloud w Belgii
   REGION: europe-west1
   SERVICE_NAME: webhook-receiver
-  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/webhook-receiver
+  # Sciezka do kodu aplikacji wewnatrz repozytorium
+  WORKING_DIR: Backend/GCP/webhook-receiver
 
 jobs:
   deploy:
     name: Build and Deploy to Google Cloud
     runs-on: ubuntu-latest
     
-    # Wymagane uprawnienia dla OIDC / Workload Identity Federation
+    # Wymagane dla bezpiecznej autoryzacji Workload Identity Federation
     permissions:
       contents: 'read'
       id-token: 'write'
 
     steps:
-      # 1. Pobranie kodu z repozytorium
+      # 1. Pobranie kodu z ograniczeniem do wymaganych katalogow
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 2. Autoryzacja w Google Cloud za pomoca OIDC (Zalecane zamiast Service Account Key)
-      # Wymaga ustawienia sekretow: GCP_WORKLOAD_IDENTITY_PROVIDER oraz GCP_SERVICE_ACCOUNT
+      # 2. Autoryzacja w GCP
+      # Uwaga: Nalezy upewnic sie, ze sekrety sa zdefiniowane w GitHub Actions
       - name: Google Auth
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          token_format: 'access_token'
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      # 3. Konfiguracja narzedzia gcloud
+      # 3. Konfiguracja SDK i Docker
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
 
-      # 4. Autoryzacja Docker do Artifact Registry / GCR
       - name: Docker Auth
         run: |-
           gcloud auth configure-docker --quiet
 
-      # 5. Budowanie obrazu kontenera
-      # Sciezka kontekstu: Backend/GCP/webhook-receiver
-      - name: Build Docker Image
+      # 4. Budowanie i wypychanie obrazu
+      # Wykorzystanie ID projektu z autoryzacji zapobiega bledom pustego tagu
+      - name: Build and Push Container
         run: |-
-          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} ./Backend/GCP/webhook-receiver
+          IMAGE_TAG="gcr.io/${{ steps.auth.outputs.project_id }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          docker build -t "$IMAGE_TAG" ${{ env.WORKING_DIR }}
+          docker push "$IMAGE_TAG"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-      # 6. Wyslanie obrazu do rejestru
-      - name: Push Docker Image
-        run: |-
-          docker push ${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-      # 7. Wdrozenie do Cloud Run v2
-      # Zastosowanie flagi --region europe-west1 zgodnie z wymogiem
+      # 5. Wdrozenie do Cloud Run v2 (Region: europe-west1)
       - name: Deploy to Cloud Run v2
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          image: ${{ env.IMAGE_ENV }}
           flags: '--allow-unauthenticated'
 
-      # 8. Wyswietlenie adresu URL uslugi
+      # 6. Finalna weryfikacja
       - name: Show Service URL
         run: |-
-          echo "Service is deployed at: ${{ steps.deploy.outputs.url }}"
+          echo "Wdrozenie zakonczone sukcesem."
+          echo "URL: ${{ steps.deploy.outputs.url }}"
