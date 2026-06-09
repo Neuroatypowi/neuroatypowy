@@ -1,4 +1,4 @@
-# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway ([Przejdź do wersji polskiej](#aws-ec2-spot-deployment-manual-bielik-pl-11b-v3-0-instruct-with-secure-api-gateway---wersja-polska))**
+# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway ([Przejdź do wersji polskiej] https://github.com/Neuroatypowi/neuroatypowy/blob/main/Backend/AI/BIELIK/README.md#wersja-polska-standard-etr-psoni)**
 
 # **English Version (ETC Standard)**
 
