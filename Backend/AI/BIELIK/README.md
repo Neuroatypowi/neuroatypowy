@@ -1,4 +1,4 @@
-# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway ([WERSJA POLSKA](#bookmark=id.vorec39jkrbw))**
+# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway ([WERSJA POLSKA](t.b7y3gk2hrbco#bookmark=id.vorec39jkrbw))**
 
 # **English Version (ETC Standard)**
 
