@@ -1,6 +1,4 @@
-# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway**
-
-[English Version](#bookmark=id.880hq8jgtzrr) |(\#wersja-polska-standard-etr-psoni)
+# **AWS EC2 Spot Deployment Manual: Bielik-PL-11B-v3.0-Instruct with Secure API Gateway ([WERSJA POLSKA](#bookmark=id.vorec39jkrbw))**
 
 # **English Version (ETC Standard)**
 
@@ -90,8 +88,7 @@ if\! mount | grep \-q "$TARGET\_DEV"; then
     sudo chmod 755 "$MOUNT\_POINT"  
 fi
 
-echo "export {ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN=\\"{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_
-\\"" \> /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
+echo "export {ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN=\\"{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_XNfiZaTuLPQnWtVkKFtzgUHlvrTxbDExbM\\"" \> /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
 chmod 600 /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
 echo "=== Setup Completed Successfully \==="
 
@@ -214,7 +211,7 @@ Type\=simple
 User\=ubuntu  
 Group\=ubuntu  
 WorkingDirectory\=/home/ubuntu  
-Environment\="{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN={ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\"  
+Environment\="{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN={ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}"  
 ExecStartPre\=/bin/sleep 180  
 ExecStart\=/usr/local/bin/start-vllm-server.sh  
 ExecStop\=/usr/local/bin/safe-shutdown.sh  
@@ -475,7 +472,7 @@ if\! mount | grep \-q "$TARGET\_DEV"; then
     sudo chmod 755 "$MOUNT\_POINT"  
 fi
 
-echo "export {ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN=\\"{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_XNfiZaTuLPQnWtVkKFtzgUHlvrTxbDExbM\\"" \> /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
+echo "export {ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN=\\"{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\\"" \> /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
 chmod 600 /home/ubuntu/.{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_token\_env  
 echo "=== Konfiguracja zakończona sukcesem\! \==="
 
@@ -598,7 +595,7 @@ Type\=simple
 User\=ubuntu  
 Group\=ubuntu  
 WorkingDirectory\=/home/ubuntu  
-Environment\="{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN={ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\"  
+Environment\="{ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}\_TOKEN={ENTER YOU KEY/WPROWADŹ SWÓJ KLUCZ}"  
 ExecStartPre\=/bin/sleep 180  
 ExecStart\=/usr/local/bin/start-vllm-server.sh  
 ExecStop\=/usr/local/bin/safe-shutdown.sh  
