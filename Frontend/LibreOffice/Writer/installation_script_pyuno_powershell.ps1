@@ -5,7 +5,8 @@
 
 .DESCRIPTION
     File name: installation_script_pyuno_powershell.ps1
-    Target environment: Windows PowerShell 5.1 + LibreOffice 26.8 embedded Python (64-bit).
+    Target environment: Windows PowerShell 5.1 + LibreOffice 26.8 embedded Python
+    (64-bit; verified on LibreOffice 26.8.3.1 / Python 3.13.18, compatible with 3.12.x).
 
     Safeguards built into this script:
       1. Compatible with both saved .ps1 execution and direct paste into an interactive
@@ -19,15 +20,14 @@
          while still strictly enforcing non-zero exit codes via $LASTEXITCODE.
       5. Installs num2words==0.5.14 with --no-deps and binary wheels only to bypass the
          docopt .tar.gz source build (WinError 5 under LibreOffice Python).
-      6. Installs pl_core_news_md directly from its .whl URL to bypass "spacy download"
-         (WinError 5 on sys.executable).
+      6. Checks if pl_core_news_md 3.8.0 is already installed before downloading its 49.5 MB
+         .whl URL directly (avoiding redundant downloads and "spacy download" WinError 5).
       7. Imports third-party packages (including spaCy/tqdm) BEFORE importing uno so
          LibreOffice's uno._uno_import hook cannot turn optional ModuleNotFoundError
          imports (such as tqdm -> envwrap) into unhandled ImportError crashes.
       8. Uses pure 7-bit ASCII characters throughout to avoid PowerShell 5.1 BOM issues.
 
 .EXAMPLE
-    Save as installation_script_pyuno_powershell.ps1 and run:
     powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\installation_script_pyuno_powershell.ps1"
 #>
 
@@ -163,17 +163,31 @@ $Num2WordsArgs = @(
 )
 Invoke-LoPy -Arguments $Num2WordsArgs
 
-$SpacyModelUrl = "https://github.com/explosion/spacy-models/releases/download/pl_core_news_md-3.8.0/pl_core_news_md-3.8.0-py3-none-any.whl"
-$SpacyModelArgs = @(
-    "-m", "pip", "install",
-    "--user",
-    "--upgrade",
-    "--only-binary", ":all:",
-    "--no-warn-script-location",
-    "--disable-pip-version-check",
-    $SpacyModelUrl
-)
-Invoke-LoPy -Arguments $SpacyModelArgs
+$PreviousEap = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+$global:LASTEXITCODE = 0
+try {
+    & $LoPy -c "import importlib.metadata, sys; sys.exit(0 if importlib.metadata.version('pl_core_news_md') == '3.8.0' else 1)" 2>&1 | Out-Null
+    $SpacyModelCheckCode = $LASTEXITCODE
+} finally {
+    $ErrorActionPreference = $PreviousEap
+}
+
+if ($SpacyModelCheckCode -ne 0) {
+    $SpacyModelUrl = "https://github.com/explosion/spacy-models/releases/download/pl_core_news_md-3.8.0/pl_core_news_md-3.8.0-py3-none-any.whl"
+    $SpacyModelArgs = @(
+        "-m", "pip", "install",
+        "--user",
+        "--upgrade",
+        "--only-binary", ":all:",
+        "--no-warn-script-location",
+        "--disable-pip-version-check",
+        $SpacyModelUrl
+    )
+    Invoke-LoPy -Arguments $SpacyModelArgs
+} else {
+    Write-Host "      pl_core_news_md 3.8.0 is already installed." -ForegroundColor DarkGray
+}
 
 # Step 4: Run end-to-end verification script inside LibreOffice's embedded Python
 Write-Host "[4/4] Running end-to-end PyUNO and library verification..." -ForegroundColor Cyan
@@ -192,8 +206,7 @@ if hasattr(sys.stdout, "reconfigure"):
 # IMPORTANT: Import third-party libraries BEFORE importing uno.
 # LibreOffice's uno._uno_import converts ModuleNotFoundError into plain ImportError,
 # which breaks optional fallback imports inside tqdm (from envwrap import envwrap).
-# If running inside a LibreOffice Writer macro where uno is already loaded,
-# temporarily restore uno._builtin_import around third-party imports.
+# Never run LibreOffice python.exe with -I, or user site-packages will be skipped.
 import pymupdf
 import fontTools
 import spacy
